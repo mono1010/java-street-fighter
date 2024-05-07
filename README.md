@@ -2,9 +2,17 @@
 
 ## EPIC
 
-Das Street Fighter game ist ein 1v1 Kampf Spiel bei welchem der Spieler gegen einen NPC kämpft.
-Gesteuert wird der Spieler mit dem Keyboard.
-Zwei Health Bars sollen die Health von einem selber und vom Gegner anzeigen.
+Street Fighter ist ein 2D 1v1 Kampfspiel bei welchem zwei Gegner gegeneinander antreten.
 Damit der Spieler gewinnen kann muss er zwei Runden gewinnen.
-Eine Runde wird beendet sobald ein Spieler kein Leben mehr hat.
-Ein Menü gibt die Funktionalität das Game zu pausieren und die Keybinds zu sehen.
+
+Eine Runde wird beendet sobald einer der Spieler kein Leben mehr hat.
+Die Health wird von beiden Spielern angezeigt.
+
+Die Map ist so gross wie das Game Fenster.
+Es gibt keine Möglichkeit mit der Map zu interagieren.
+
+Mit dem Keyboard wird der Spieler gesteuert und kann Aktionen ausführen wie schlagen.
+Es werden nur einfache Schläge implementiert werden.
+
+Bei dem Start einer Runde werden die Spieler Links und Rechts platziert und ein Countdown startet welcher auf 0 zählt.
+Rechts befindet sich immer der NPC.
