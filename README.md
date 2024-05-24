@@ -16,3 +16,10 @@ Es werden nur einfache Schläge implementiert werden.
 
 Bei dem Start einer Runde werden die Spieler Links und Rechts platziert und ein Countdown startet welcher auf 0 zählt.
 Rechts befindet sich immer der NPC.
+
+## Installation
+
+### *NIX
+
+1. `mvn` installieren
+2. Die Datei [run.bash](./run.bash) ausführen.
