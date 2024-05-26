@@ -14,6 +14,8 @@ public class InputController implements KeyListener {
     boolean keys[];
 
     private Logger log = LogManager.getLogger(Main.class);
+
+    private static InputController instance;
     
     public InputController() {
         keys = new boolean[KeyEvent.VK_Z];
@@ -51,5 +53,12 @@ public class InputController implements KeyListener {
             this.keys[e.getKeyCode()] = false;
             this.log.trace("Key released {}", KeyEvent.getKeyText(e.getKeyCode()));
         }
+    }
+
+    public static InputController getInstance() {
+        if (instance == null) {
+            instance = new InputController();
+        }
+        return instance;
     }
 }

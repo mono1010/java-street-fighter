@@ -51,17 +51,15 @@ public class Fighter extends Entity {
 
     private AssetsManager assetsManager;
     private Animate animate;
-    private Game game;
 
     boolean isJumping = false;
     AnimationLock animationLock;
 
     private Logger log = LogManager.getLogger(Main.class);
 
-    public Fighter(Game game, int x, int y, String assetsDir) {
+    public Fighter(int x, int y, String assetsDir) {
         super(x, y, 0, 0);
 
-        this.game = game;
         this.assetsManager = new AssetsManager(assetsDir);
         this.animate = new Animate();
         this.animate.animate(this.assetsManager.getAsset(Asset.State.IDLE));
@@ -83,7 +81,7 @@ public class Fighter extends Entity {
 
         this.animate.onTick();
 
-        InputController input = this.game.getInputController();
+        InputController input = InputController.getInstance();
         if (input.right) {
             this.velocityX += this.walkSpeed;
         } 

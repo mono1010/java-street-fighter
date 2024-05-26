@@ -17,17 +17,12 @@ public class Game extends JPanel {
   private final int width = 1200;
   private final int height = 600;
 
-  private InputController inputController;
   private Logger log = LogManager.getLogger(Main.class);
-
-  public InputController getInputController() {
-    return inputController;
-  }
 
   Fighter f1;
   Menu menu;
   public Game(String assetsPath) {
-    f1 = new Fighter(this, 0,0, assetsPath);
+    f1 = new Fighter(0,0, assetsPath);
 
     JFrame frame = new JFrame("Street Fighter");
 
@@ -39,8 +34,7 @@ public class Game extends JPanel {
     frame.setAlwaysOnTop(true);
     frame.setResizable(false);
     
-    inputController = new InputController();
-    frame.addKeyListener(inputController);
+    frame.addKeyListener(InputController.getInstance());
 
 
     double interpolation = 0;
@@ -63,10 +57,10 @@ public class Game extends JPanel {
         }
       }
       
-      if (inputController.escape) {
+      if (InputController.getInstance().escape) {
         menu.openMenu(false);
         repaint();
-        inputController.escape = false;
+        InputController.getInstance().escape = false;
         continue;
       }
       
@@ -76,7 +70,7 @@ public class Game extends JPanel {
 
       while (delta >= 1) {
         ticks++;
-        inputController.onTick();
+        InputController.getInstance().onTick();
         f1.onTick();
         delta--;
       }
