@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import ch.teko.game.Main;
 
 public class InputController implements KeyListener {
-    public boolean up, down, right, left, escape;
+    public boolean up, down, right, left, escape = false;
     boolean keys[];
 
     private Logger log = LogManager.getLogger(Main.class);

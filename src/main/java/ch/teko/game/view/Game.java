@@ -16,6 +16,7 @@ import ch.teko.game.controllers.*;
 public class Game extends JPanel {
   private final int width = 1200;
   private final int height = 600;
+  private final boolean instantStart = true;
 
   private Logger log = LogManager.getLogger(Main.class);
 
@@ -47,7 +48,9 @@ public class Game extends JPanel {
     long lastTimer = System.currentTimeMillis();
     double delta = 0;
 
-    menu.openMenu(true);
+    if (!this.instantStart)
+      menu.openMenu(true);
+      
     while (true) {
       while (menu.isOpen()) {
         try {

@@ -42,6 +42,8 @@ public class Menu {
         menuDialog.add(exitButton);
 
         frame.add(menuDialog);
+
+        closeMenu();
     }
 
     public void openMenu(boolean startMenu) {
