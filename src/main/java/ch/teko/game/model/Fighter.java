@@ -49,6 +49,7 @@ class AnimationLock {
 
 public class Fighter extends Entity {
     private float walkSpeed = 5;
+    private boolean isPlayer1;
 
     private AssetsManager assetsManager;
     private Animate animate;
@@ -58,9 +59,10 @@ public class Fighter extends Entity {
 
     private Logger log = LogManager.getLogger(Main.class);
 
-    public Fighter(int x, int y, String assetsDir) {
+    public Fighter(int x, int y, boolean isPlayer1, String assetsDir) {
         super(x, y, 0, 0);
 
+        this.isPlayer1 = isPlayer1;
         this.assetsManager = new AssetsManager(assetsDir);
         this.animate = new Animate();
         this.animate.animate(this.assetsManager.getAsset(Asset.State.IDLE));
@@ -75,6 +77,12 @@ public class Fighter extends Entity {
             this.animationLock.locked = true;       
         }
     }
+    PlayerControlls getInputController() {
+        if (isPlayer1)
+            return InputController.getInstance().player1;
+        else 
+            return InputController.getInstance().player2;
+    }
 
     @Override
     public void onTick() {
@@ -82,7 +90,7 @@ public class Fighter extends Entity {
 
         this.animate.onTick();
 
-        InputController input = InputController.getInstance();
+        PlayerControlls input = getInputController();
 
         if (input.right)
             if (this.animate.getFlipAsset() != false)

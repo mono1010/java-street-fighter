@@ -20,7 +20,7 @@ public class Game extends JPanel {
 
   private Logger log = LogManager.getLogger(Main.class);
 
-  Fighter f1;
+  Fighter f1, f2;
   Menu menu;
   public Game(String assetsPath) {
     f1 = new Fighter(0,0, assetsPath);
@@ -75,6 +75,7 @@ public class Game extends JPanel {
         ticks++;
         InputController.getInstance().onTick();
         f1.onTick();
+        f2.onTick();
         delta--;
       }
 
@@ -101,5 +102,6 @@ public class Game extends JPanel {
 
     if (!menu.onRender(g))
       f1.onRender(g);
+      f2.onRender(g);
   }
 }
