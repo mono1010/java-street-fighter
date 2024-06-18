@@ -14,8 +14,8 @@ import ch.teko.game.model.*;
 import ch.teko.game.controllers.*;
 
 public class Game extends JPanel {
-  private final int width = 1200;
-  private final int height = 600;
+  private final int width = 600;
+  private final int height = 400;
   private final boolean instantStart = true;
 
   private Logger log = LogManager.getLogger(Main.class);
@@ -23,9 +23,14 @@ public class Game extends JPanel {
   Fighter f1, f2;
   Menu menu;
   public Game(String assetsPath) {
-    f1 = new Fighter(0,0, assetsPath);
 
     JFrame frame = new JFrame("Street Fighter");
+    
+    Floor.getInstance().setHeight(height - 50);
+
+    final int startOffset = 80;
+    f1 = new Fighter(startOffset, Floor.getInstance().getHeight(), true, assetsPath);
+    f2 = new Fighter(width - startOffset, Floor.getInstance().getHeight(), false, assetsPath);
 
     this.menu = new Menu(frame);
     frame.getContentPane().add(this);
@@ -37,8 +42,6 @@ public class Game extends JPanel {
     
     frame.addKeyListener(InputController.getInstance());
 
-
-    double interpolation = 0;
     final int TICKS = 60;
     final double nsPerTick = 1000000000 / TICKS;
 
@@ -50,7 +53,7 @@ public class Game extends JPanel {
 
     if (!this.instantStart)
       menu.openMenu(true);
-      
+
     while (true) {
       while (menu.isOpen()) {
         try {
@@ -99,6 +102,7 @@ public class Game extends JPanel {
 
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
+    Floor.getInstance().onRender(g);
 
     if (!menu.onRender(g))
       f1.onRender(g);

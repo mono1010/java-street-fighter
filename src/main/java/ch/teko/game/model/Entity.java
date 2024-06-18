@@ -1,6 +1,7 @@
 package ch.teko.game.model;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 public abstract class Entity {
     protected int x, y, velocityX, velocityY;
@@ -14,4 +15,6 @@ public abstract class Entity {
 
     public abstract void onTick();
     public abstract void onRender(Graphics g);
+
+    public abstract Rectangle getAABB();
 }

@@ -1,14 +1,17 @@
 package ch.teko.game.model;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.w3c.dom.css.Rect;
 
 import ch.teko.game.model.*;
 import ch.teko.game.view.*;
-import ch.teko.game.controllers.InputController;
+import ch.teko.game.controllers.*;
 import ch.teko.game.Main;
 
 enum AnimationUnlockAction {
@@ -67,6 +70,8 @@ public class Fighter extends Entity {
         this.animate = new Animate();
         this.animate.animate(this.assetsManager.getAsset(Asset.State.IDLE));
         this.animationLock = new AnimationLock(this.animate);
+
+        adjustPositionToImageSize();
     }
 
     void jump() {
@@ -77,6 +82,19 @@ public class Fighter extends Entity {
             this.animationLock.locked = true;       
         }
     }
+
+    void adjustPositionToImageSize() {
+        BufferedImage image = this.animate.get();
+
+        this.y -= image.getHeight();
+        this.x -= ((image.getWidth() - image.getMinX()) / 2);
+    }
+
+    void adjustYPositionToImageSize() {
+        BufferedImage image = this.animate.get();
+        this.y -= image.getHeight();
+    }
+
     PlayerControlls getInputController() {
         if (isPlayer1)
             return InputController.getInstance().player1;
@@ -124,16 +142,36 @@ public class Fighter extends Entity {
         } else if (!this.animationLock.locked) {
             this.animate.animate(this.assetsManager.getAsset(Asset.State.RUN));
         }
-        
+
         this.x += this.velocityX;
         this.y += this.velocityY;
         this.velocityX = 0;
         this.velocityY = 0;
+
+        Rectangle aabb = this.getAABB();
+        //log.info("this.y {} {}", aabb.getY() + aabb.getHeight(), Floor.getInstance().getHeight());
+
+        if (aabb.getY() + aabb.getHeight() > Floor.getInstance().getHeight()) {
+            this.y -= aabb.getY() + aabb.getHeight() - Floor.getInstance().getHeight();
+        } 
     }
 
     @Override
     public void onRender(Graphics g) {
         BufferedImage image = this.animate.get();
         g.drawImage(image, this.x, this.y, null);
+
+        Rectangle boundingBox = this.getAABB();
+        g.setColor(Color.RED);
+        g.drawRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+    }
+
+    public Rectangle getAABB() {
+        BufferedImage image = this.animate.get();
+        int width = image.getWidth() - 1;
+        int height = image.getHeight() - 1;
+        int sizeX = width - image.getMinX();
+        int sizeY = height - image.getMinY();
+        return new Rectangle(this.x + (sizeX / 2) - 10, this.y + (sizeY / 2) - 25, 25, 55);
     }
 }
