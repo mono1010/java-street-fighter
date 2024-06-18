@@ -1,5 +1,10 @@
 package ch.teko.game.model;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 
 import ch.teko.game.model.*;
@@ -12,6 +17,8 @@ public class Animate {
     private int spriteColumn;
 
     private Asset currentAsset;
+
+    private boolean flipAsset;
 
     public Animate() {
     }
@@ -62,6 +69,45 @@ public class Animate {
     }
 
     public BufferedImage get() {
-        return this.currentAsset.image.getSubimage(this.animationIndex * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight);
+        return rotate(this.currentAsset.image.getSubimage(this.animationIndex * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight));
     }
+
+    public static BufferedImage copyImage(BufferedImage source){
+        BufferedImage b = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
+        Graphics g = b.getGraphics();
+        g.drawImage(source, 0, 0, null);
+        g.dispose();
+        return b;
+    }
+    
+    public BufferedImage rotate(BufferedImage image) {
+        if (!this.flipAsset)
+            return image;
+
+        BufferedImage copy = copyImage(image);
+        flipAsset(copy);
+        return copy;
+    }
+
+    void flipAsset() {
+        this.flipAsset = !this.flipAsset;
+    }
+
+    boolean getFlipAsset() {
+        return this.flipAsset;
+    }
+
+    public static void flipAsset(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+    
+        for (int i = 0; i < width / 2; i++) {
+            for (int j = 0; j < height; j++) {
+                int tmp = image.getRGB(i, j);
+                image.setRGB(i, j, image.getRGB(width - i - 1, j));
+                image.setRGB(width - i - 1, j, tmp);
+            }
+        }
+    }
+    
 }

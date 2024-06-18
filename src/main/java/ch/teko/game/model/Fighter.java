@@ -1,6 +1,7 @@
 package ch.teko.game.model;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -82,6 +83,15 @@ public class Fighter extends Entity {
         this.animate.onTick();
 
         InputController input = InputController.getInstance();
+
+        if (input.right)
+            if (this.animate.getFlipAsset() != false)
+                this.animate.flipAsset();
+        
+        if (input.left)
+            if (this.animate.getFlipAsset() != true)
+                this.animate.flipAsset();
+
         if (input.right) {
             this.velocityX += this.walkSpeed;
         } 
@@ -115,6 +125,7 @@ public class Fighter extends Entity {
 
     @Override
     public void onRender(Graphics g) {
-        g.drawImage(this.animate.get(), this.x, this.y, null);
+        BufferedImage image = this.animate.get();
+        g.drawImage(image, this.x, this.y, null);
     }
 }
