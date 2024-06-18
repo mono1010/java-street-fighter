@@ -14,8 +14,6 @@ import ch.teko.game.model.*;
 import ch.teko.game.controllers.*;
 
 public class Game extends JPanel {
-  private final int width = 600;
-  private final int height = 400;
   private final boolean instantStart = true;
 
   private Logger log = LogManager.getLogger(Main.class);
@@ -23,6 +21,10 @@ public class Game extends JPanel {
   Fighter f1, f2;
   Menu menu;
   public Game(String assetsPath) {
+    Map.getInstance().setWidth(600);
+    Map.getInstance().setHeight(400);
+    final int height = Map.getInstance().getHeight();
+    final int width = Map.getInstance().getWidth();
 
     JFrame frame = new JFrame("Street Fighter");
     
