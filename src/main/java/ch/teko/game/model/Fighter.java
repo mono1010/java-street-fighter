@@ -71,7 +71,7 @@ public class Fighter extends Entity {
         this.animate.animate(this.assetsManager.getAsset(Asset.State.IDLE));
         this.animationLock = new AnimationLock(this.animate);
 
-        adjustPositionToImageSize();
+        setPositionRelativeToAABB(x, y);
     }
 
     void jump() {
@@ -81,18 +81,6 @@ public class Fighter extends Entity {
             this.animationLock.velocityY -= 5;
             this.animationLock.locked = true;       
         }
-    }
-
-    void adjustPositionToImageSize() {
-        BufferedImage image = this.animate.get();
-
-        this.y -= image.getHeight();
-        this.x -= ((image.getWidth() - image.getMinX()) / 2);
-    }
-
-    void adjustYPositionToImageSize() {
-        BufferedImage image = this.animate.get();
-        this.y -= image.getHeight();
     }
 
     PlayerControlls getInputController() {
@@ -149,8 +137,6 @@ public class Fighter extends Entity {
         this.velocityY = 0;
 
         Rectangle aabb = this.getAABB();
-        //log.info("this.y {} {}", aabb.getY() + aabb.getHeight(), Floor.getInstance().getHeight());
-
         if (aabb.getY() + aabb.getHeight() > Floor.getInstance().getHeight()) {
             this.y -= aabb.getY() + aabb.getHeight() - Floor.getInstance().getHeight();
         } 
@@ -173,5 +159,11 @@ public class Fighter extends Entity {
         int sizeX = width - image.getMinX();
         int sizeY = height - image.getMinY();
         return new Rectangle(this.x + (sizeX / 2) - 10, this.y + (sizeY / 2) - 25, 25, 55);
+    }
+
+    public void setPositionRelativeToAABB(int width, int height) {
+        Rectangle aabb = this.getAABB();
+        this.y -= aabb.getY() + aabb.getHeight() - height;
+        this.x -= aabb.getX() + aabb.getWidth() - width;
     }
 }
