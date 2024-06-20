@@ -9,14 +9,18 @@ class Asset {
         IDLE,
         JUMP,
         FALL,
+        ATTACK1,
+        ATTACK2,
     }
 
     public AssetsMetadata metadata;
     public BufferedImage image;
+    public State state;
 
-    public Asset(AssetsMetadata metadata, BufferedImage image) {
+    public Asset(AssetsMetadata metadata, BufferedImage image, State state) {
         this.metadata = metadata;
         this.image = image;
+        this.state = state;
     }
 }
 

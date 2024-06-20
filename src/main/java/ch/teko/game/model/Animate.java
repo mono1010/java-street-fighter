@@ -26,16 +26,21 @@ public class Animate {
     private long lastTime, timer;
     final int rate = 60;
 
-    public void onTick() {
+    public boolean onTick() {
+        boolean reachedEnd = false;
         timer += System.currentTimeMillis() - lastTime;
         lastTime = System.currentTimeMillis();
         if (timer > rate) {
             this.animationIndex++;
-            if (this.animationIndex == this.spriteColumn)
+            if (this.animationIndex == this.spriteColumn) {
+                reachedEnd = true;
                 this.animationIndex = 0;
+            }
             
             timer = 0;
         }
+
+        return reachedEnd;
     }
 
     public int getAnimationIndex() {
@@ -62,10 +67,11 @@ public class Animate {
             return;
         
         this.currentAsset = asset;
-        this.animationIndex = 1;
+        this.animationIndex = 0;
         this.spriteColumn = asset.metadata.column;
         this.spriteHeight = this.currentAsset.image.getHeight() / 1;
         this.spriteWidth = this.currentAsset.image.getWidth() / this.spriteColumn;
+        this.timer = 0;
     }
 
     public BufferedImage get() {

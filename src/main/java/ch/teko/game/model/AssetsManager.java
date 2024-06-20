@@ -29,7 +29,7 @@ public class AssetsManager {
             for (Asset.State a : Asset.State.values()) {
                 String assetPath = assetsDir + assetFiles[a.ordinal()] + ".png";
                 log.info("Loading asset {}", assetPath);
-                this.assets[a.ordinal()] = new Asset(getAssetMetadata(assetsMetadata, a), loadImageFromDisk(assetPath));
+                this.assets[a.ordinal()] = new Asset(getAssetMetadata(assetsMetadata, a), loadImageFromDisk(assetPath), a);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,6 +52,8 @@ public class AssetsManager {
             "Idle",
             "Jump",
             "Fall",
+            "Attack1",
+            "Attack2",
     };
 
     public Asset getAsset(Asset.State asset) {

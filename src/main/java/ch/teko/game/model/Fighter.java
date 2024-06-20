@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,34 +22,140 @@ enum AnimationUnlockAction {
     FALL,
 }
 
-class AnimationLock {
-    Animate animate;
-    int velocityX, velocityY;
-    boolean locked;
+class Timer {
+    long timer, lastTime;
 
-    AnimationUnlockAction unlockAction = AnimationUnlockAction.NONE;
-
-    public AnimationLock(Animate animate) {
-        this.animate = animate;
-        this.locked = false;
-        this.velocityX = 0;
-        this.velocityY = 0;
+    public Timer() {
+        reset();
     }
 
-    void update() {
-        if (!locked)
+    boolean reached(long delay) {
+        timer += System.currentTimeMillis() - lastTime;
+        lastTime = System.currentTimeMillis();
+
+        if (timer <= delay) {
+            return false;
+        }
+
+        return true;
+    }
+
+    void reset() {
+        timer = 0;
+        lastTime = System.currentTimeMillis();
+    }
+}
+
+class AnimationState {
+    float velocityX, velocityY;
+
+    private int currentAnimationIterations = 0;
+    private int animationIterations = 0;
+    private int tickesUsedForAnimation = 0;
+    private int maxTicksForAnimation = 0;
+    private AssetsManager assetsManager;
+    private Animate animate;
+    private Optional<Asset.State> currentAnimation;
+    private Optional<Asset.State> previousAnimation;
+    private List<Asset.State> wantedAnimations = new ArrayList<>();
+
+    private Logger log = LogManager.getLogger(Main.class);
+
+    public AnimationState(Animate animate, AssetsManager assetsManager) {
+        this.animate = animate;
+        this.assetsManager = assetsManager;
+        this.currentAnimation = Optional.empty();
+        this.previousAnimation = Optional.empty();
+    }
+
+    void reset() {
+        this.currentAnimationIterations = 0;
+        this.animationIterations = 0;
+        this.tickesUsedForAnimation = 0;
+        this.maxTicksForAnimation = 0;
+    }
+
+    boolean reached(int iterations) {
+        if (iterations >= this.animationIterations)
+            return true;
+
+        return false;
+    }
+
+    void onTick() {
+        this.wantedAnimations.clear();
+        boolean reachedEnd = this.animate.onTick();
+
+        this.tickesUsedForAnimation += 1;
+        if (this.maxTicksForAnimation == 0) {
+            if (reachedEnd && this.animationIterations != 0)
+                this.currentAnimationIterations += 1;
+
+            if (!reached(this.currentAnimationIterations) && this.animationIterations != 0)
+                return;
+        } else {
+            if (this.maxTicksForAnimation > this.tickesUsedForAnimation)
+                return;
+        }
+
+        previousAnimation = currentAnimation;
+        if (!this.triggerChainedAnimation()) {
+            this.currentAnimation = Optional.empty();
+            this.previousAnimation = Optional.empty();
+            this.reset();
+        }
+    }
+
+    boolean triggerChainedAnimation() {
+        Asset.State currentAnimationState = this.currentAnimation.orElse(Asset.State.IDLE);
+        if (currentAnimationState == Asset.State.JUMP) {
+            this.animate.animate(this.assetsManager.getAsset(Asset.State.FALL));
+            currentAnimation = Optional.of(Asset.State.FALL);
+            int ticksUsed = this.tickesUsedForAnimation;
+            this.reset();
+            this.maxTicksForAnimation  = ticksUsed;
+            log.info("triggered chained fall animation");
+            return true;
+        }
+
+        return false;
+    }
+
+    void triggerAnimation(Asset.State animation) {
+        this.wantedAnimations.add(animation);
+
+        Asset.State currentAnimationState = this.currentAnimation.orElse(Asset.State.IDLE);
+        if (currentAnimationState == Asset.State.JUMP || currentAnimationState == Asset.State.FALL)
             return;
 
-        if (this.animate.getAnimationIndex() + 1 == this.animate.getAnimationMaxIndex()) {
-            this.velocityX = 0;
-            this.velocityY = 0;
-            if (unlockAction == AnimationUnlockAction.NONE)
-                this.locked = false;
-            else if (unlockAction == AnimationUnlockAction.FALL) {
-                this.velocityY -= 5;
-                unlockAction = AnimationUnlockAction.NONE;
-            }
-        } 
+        if (animation == Asset.State.JUMP) {
+            this.animate.animate(this.assetsManager.getAsset(Asset.State.JUMP));
+            currentAnimation = Optional.of(animation);
+            this.reset();
+            this.animationIterations = 1;
+            log.info("triggered JUMP animation");
+            return;
+        }
+
+        if (wantedAnimations.contains(Asset.State.JUMP))
+            return;
+
+        if (animation == Asset.State.RUN) {
+            this.animate.animate(this.assetsManager.getAsset(Asset.State.RUN));
+            currentAnimation = Optional.of(animation);
+            this.reset();
+            return;
+        }
+
+        if (wantedAnimations.contains(Asset.State.RUN))
+            return;
+
+        if (animation == Asset.State.IDLE) {
+            this.animate.animate(this.assetsManager.getAsset(Asset.State.IDLE));
+            currentAnimation = Optional.of(animation);
+            this.reset();
+            return;
+        }
     }
 }
 
@@ -58,7 +167,9 @@ public class Fighter extends Entity {
     private Animate animate;
 
     boolean isJumping = false;
-    AnimationLock animationLock;
+
+    AnimationState animationState;
+    PlayerControlls input;
 
     private Logger log = LogManager.getLogger(Main.class);
 
@@ -69,85 +180,89 @@ public class Fighter extends Entity {
         this.assetsManager = new AssetsManager(assetsDir);
         this.animate = new Animate();
         this.animate.animate(this.assetsManager.getAsset(Asset.State.IDLE));
-        this.animationLock = new AnimationLock(this.animate);
+        this.animationState = new AnimationState(animate, assetsManager);
+        this.input = this.getInputController();
 
         setPositionRelativeToAABB(x, y);
-    }
-
-    void jump() {
-        if (!this.animationLock.locked) {
-            this.animate.animate(this.assetsManager.getAsset(Asset.State.JUMP));
-            this.animationLock.unlockAction = AnimationUnlockAction.FALL;
-            this.animationLock.velocityY -= 5;
-            this.animationLock.locked = true;       
-        }
     }
 
     PlayerControlls getInputController() {
         if (isPlayer1)
             return InputController.getInstance().player1;
-        else 
+        else
             return InputController.getInstance().player2;
+    }
+
+    void setAnimation() {
+        if (this.input.right)
+            if (this.animate.getFlipAsset() != false)
+                this.animate.flipAsset();
+
+        if (this.input.left)
+            if (this.animate.getFlipAsset() != true)
+                this.animate.flipAsset();
+
+        if (this.input.right)
+            animationState.triggerAnimation(Asset.State.RUN);
+
+        if (this.input.left)
+            animationState.triggerAnimation(Asset.State.RUN);
+
+        if (this.input.attack1)
+            animationState.triggerAnimation(Asset.State.ATTACK1);
+
+        if (this.input.up)
+            animationState.triggerAnimation(Asset.State.JUMP);
+
+        animationState.triggerAnimation(Asset.State.IDLE);
+    }
+
+    void setVelocity() {
+        if (this.input.right) {
+            this.velocityX += this.walkSpeed;
+        }
+
+        if (this.input.left) {
+            this.velocityX -= this.walkSpeed;
+        }
+
+        if (this.animate.getCurrentAsset().state == Asset.State.JUMP) {
+            this.velocityY -= 6;
+            return;
+        }
+
+        if (this.animate.getCurrentAsset().state == Asset.State.FALL) {
+            this.velocityY += 6;
+            return;
+        }
     }
 
     @Override
     public void onTick() {
-        this.animationLock.update();
+        this.animationState.onTick();
 
-        this.animate.onTick();
-
-        PlayerControlls input = getInputController();
-
-        if (input.right)
-            if (this.animate.getFlipAsset() != false)
-                this.animate.flipAsset();
-        
-        if (input.left)
-            if (this.animate.getFlipAsset() != true)
-                this.animate.flipAsset();
-
-        if (input.right) {
-            this.velocityX += this.walkSpeed;
-        } 
-        
-        if (input.left) {
-            this.velocityX -= this.walkSpeed;
-        }
-
-        if (input.up) {
-            this.jump();
-        }
-
-        if (input.down) {
-            this.velocityY += 10;
-        }
-
-        this.velocityX += this.animationLock.velocityX;
-        this.velocityY += this.animationLock.velocityY;
-
-        if (this.velocityX == 0 && this.velocityY == 0 && !this.animationLock.locked) {
-            this.animate.animate(this.assetsManager.getAsset(Asset.State.IDLE));   
-        } else if (!this.animationLock.locked) {
-            this.animate.animate(this.assetsManager.getAsset(Asset.State.RUN));
-        }
+        setAnimation();
+        setVelocity();
 
         this.x += this.velocityX;
         this.y += this.velocityY;
         this.velocityX = 0;
         this.velocityY = 0;
 
-        Rectangle aabb = this.getAABB();
-        if (aabb.getY() + aabb.getHeight() > Floor.getInstance().getHeight()) {
-            this.y -= aabb.getY() + aabb.getHeight() - Floor.getInstance().getHeight();
-        } 
-
-        if (aabb.getX() < Map.getInstance().getX()) {
-            this.x += Map.getInstance().getX() - aabb.getX();
-        }
-
-        if (aabb.getX() + aabb.getWidth() > Map.getInstance().getWidth()) {
-            this.x -=  aabb.getX() + aabb.getWidth() - Map.getInstance().getWidth();
-        }
+        /*
+         * Rectangle aabb = this.getAABB();
+         * if (aabb.getY() + aabb.getHeight() > Floor.getInstance().getHeight()) {
+         * this.y -= aabb.getY() + aabb.getHeight() - Floor.getInstance().getHeight();
+         * }
+         * 
+         * if (aabb.getX() < Map.getInstance().getX()) {
+         * this.x += Map.getInstance().getX() - aabb.getX();
+         * }
+         * 
+         * if (aabb.getX() + aabb.getWidth() > Map.getInstance().getWidth()) {
+         * this.x -= aabb.getX() + aabb.getWidth() - Map.getInstance().getWidth();
+         * }
+         */
     }
 
     @Override
@@ -166,7 +281,12 @@ public class Fighter extends Entity {
         int height = image.getHeight() - 1;
         int sizeX = width - image.getMinX();
         int sizeY = height - image.getMinY();
-        return new Rectangle(this.x + (sizeX / 2) - 10, this.y + (sizeY / 2) - 25, 25, 55);
+
+        if (this.animate.getFlipAsset() == true) {
+            return new Rectangle(this.x + (sizeX / 2) - 15, this.y + (sizeY / 2) - 25, 25, 55);
+        } else {
+            return new Rectangle(this.x + (sizeX / 2) - 15, this.y + (sizeY / 2) - 25, 25, 55);
+        }
     }
 
     public void setPositionRelativeToAABB(int width, int height) {
