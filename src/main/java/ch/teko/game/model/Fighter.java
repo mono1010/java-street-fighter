@@ -247,20 +247,18 @@ public class Fighter extends Entity {
         this.velocityX = 0;
         this.velocityY = 0;
 
-        /*
-         * Rectangle aabb = this.getAABB();
-         * if (aabb.getY() + aabb.getHeight() > Floor.getInstance().getHeight()) {
-         * this.y -= aabb.getY() + aabb.getHeight() - Floor.getInstance().getHeight();
-         * }
-         * 
-         * if (aabb.getX() < Map.getInstance().getX()) {
-         * this.x += Map.getInstance().getX() - aabb.getX();
-         * }
-         * 
-         * if (aabb.getX() + aabb.getWidth() > Map.getInstance().getWidth()) {
-         * this.x -= aabb.getX() + aabb.getWidth() - Map.getInstance().getWidth();
-         * }
-         */
+        Rectangle aabb = this.getAABB();
+        if (aabb.getY() + aabb.getHeight() > Floor.getInstance().getHeight()) {
+            this.y -= aabb.getY() + aabb.getHeight() - Floor.getInstance().getHeight();
+        }
+
+        if (aabb.getX() < Map.getInstance().getX()) {
+            this.x += Map.getInstance().getX() - aabb.getX();
+        }
+
+        if (aabb.getX() + aabb.getWidth() > Map.getInstance().getWidth()) {
+            this.x -= aabb.getX() + aabb.getWidth() - Map.getInstance().getWidth();
+        }
     }
 
     @Override
