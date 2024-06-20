@@ -113,7 +113,7 @@ class AnimationState {
             currentAnimation = Optional.of(Asset.State.FALL);
             int ticksUsed = this.tickesUsedForAnimation;
             this.reset();
-            this.maxTicksForAnimation  = ticksUsed;
+            this.maxTicksForAnimation = ticksUsed;
             log.info("triggered chained fall animation");
             return true;
         }
@@ -194,13 +194,13 @@ public class Fighter extends Entity {
     }
 
     void setAnimation() {
-        if (this.input.right)
+        if (this.input.right) {
             if (this.animate.getFlipAsset() != false)
                 this.animate.flipAsset();
-
-        if (this.input.left)
+        } else if (this.input.left) {
             if (this.animate.getFlipAsset() != true)
                 this.animate.flipAsset();
+        }
 
         if (this.input.right)
             animationState.triggerAnimation(Asset.State.RUN);
@@ -220,9 +220,7 @@ public class Fighter extends Entity {
     void setVelocity() {
         if (this.input.right) {
             this.velocityX += this.walkSpeed;
-        }
-
-        if (this.input.left) {
+        } else if (this.input.left) {
             this.velocityX -= this.walkSpeed;
         }
 
