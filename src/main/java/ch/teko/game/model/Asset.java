@@ -2,36 +2,48 @@ package ch.teko.game.model;
 
 import java.awt.image.BufferedImage;
 
-class Asset {
+/**
+ * Represents an asset in the game.
+ */
+public class Asset {
 
+    /**
+     * Enumeration of existing animations.
+     */
     public enum State {
         RUN,
         IDLE,
         JUMP,
         FALL,
         ATTACK1,
-        ATTACK2,
+        ATTACK2
     }
 
+    /**
+     * Metadata associated with the asset.
+     */
     public AssetsMetadata metadata;
+
+    /**
+     * The asset in a cached BufferedImage.
+     */
     public BufferedImage image;
+
+    /**
+     * The state the asset represents.
+     */
     public State state;
 
+    /**
+     * Constructs an Asset object.
+     *
+     * @param metadata The metadata for the asset.
+     * @param image    The image representing the asset.
+     * @param state    The state the asset represents.
+     */
     public Asset(AssetsMetadata metadata, BufferedImage image, State state) {
         this.metadata = metadata;
         this.image = image;
         this.state = state;
-    }
-}
-
-class AssetsMetadata {
-    public String name;
-    public int column;
-    public int row;
-
-    public AssetsMetadata(String name, int column, int row) {
-        this.name = name;
-        this.column = column;
-        this.row = row;
     }
 }
