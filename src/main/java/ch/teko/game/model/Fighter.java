@@ -140,6 +140,34 @@ class AnimationState {
         if (wantedAnimations.contains(Asset.State.JUMP))
             return;
 
+        if (currentAnimationState == Asset.State.ATTACK1 || currentAnimationState == Asset.State.ATTACK2)
+            return;
+
+        if (animation == Asset.State.ATTACK1) {
+            this.animate.animate(this.assetsManager.getAsset(Asset.State.ATTACK1));
+            currentAnimation = Optional.of(animation);
+            this.reset();
+            this.animationIterations = 1;
+            return;
+        }
+
+        if (wantedAnimations.contains(Asset.State.ATTACK1))
+            return;
+
+        if (currentAnimationState == Asset.State.ATTACK2)
+            return;
+
+        if (animation == Asset.State.ATTACK2) {
+            this.animate.animate(this.assetsManager.getAsset(Asset.State.ATTACK2));
+            currentAnimation = Optional.of(animation);
+            this.reset();
+            this.animationIterations = 1;
+            return;
+        }
+
+        if (wantedAnimations.contains(Asset.State.ATTACK2))
+            return;
+
         if (animation == Asset.State.RUN) {
             this.animate.animate(this.assetsManager.getAsset(Asset.State.RUN));
             currentAnimation = Optional.of(animation);
@@ -210,6 +238,9 @@ public class Fighter extends Entity {
 
         if (this.input.attack1)
             animationState.triggerAnimation(Asset.State.ATTACK1);
+
+        if (this.input.attack2)
+            animationState.triggerAnimation(Asset.State.ATTACK2);
 
         if (this.input.up)
             animationState.triggerAnimation(Asset.State.JUMP);
