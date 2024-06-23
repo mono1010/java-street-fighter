@@ -18,7 +18,7 @@ public class InputController implements KeyListener {
      * Represents if the escape key has been pressed.
      * Will not be unset in the InputController class
      */
-    private boolean escape = false;
+    public boolean escape = false;
 
     /**
      * Array containing the controls of all players
