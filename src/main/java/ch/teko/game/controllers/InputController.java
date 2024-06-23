@@ -10,18 +10,49 @@ import org.apache.logging.log4j.Logger;
 import ch.teko.game.Main;
 import ch.teko.game.controllers.*;
 
+/**
+ * Represents an input controller for handling keyboard events.
+ */
 public class InputController implements KeyListener {
-    public boolean escape = false;
+    /**
+     * Represents if the escape key has been pressed.
+     * Will not be unset in the InputController class
+     */
+    private boolean escape = false;
+
+    /**
+     * Array containing the controls of all players
+     */
     private PlayerControlls[] players;
+
+    /**
+     * Player1 control structure
+     */
     public PlayerControlls player1;
+
+    /**
+     * Player2 control structure
+     */
     public PlayerControlls player2;
 
-    boolean keys[];
+    /**
+     * Array containing key pressed states
+     */
+    private boolean keys[];
 
+    /**
+     * Log4j instance
+     */
     private Logger log = LogManager.getLogger(Main.class);
 
+    /**
+     * Instance of InputController for singleton pattern.
+     */
     private static InputController instance;
-    
+
+    /**
+     * Constructs a new InputController.
+     */
     public InputController() {
         keys = new boolean[KeyEvent.VK_Z];
         players = new PlayerControlls[2];
@@ -31,6 +62,9 @@ public class InputController implements KeyListener {
         player2 = players[1];
     }
 
+    /**
+     * Updates the input state on each game tick.
+     */
     public void onTick() {
         player1.up = keys[KeyEvent.VK_W];
         player1.left = keys[KeyEvent.VK_A];
@@ -47,7 +81,7 @@ public class InputController implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        
+        // Implementation for keyTyped event (if needed)
     }
 
     @Override
@@ -62,6 +96,7 @@ public class InputController implements KeyListener {
             this.log.trace("Key pressed {}", KeyEvent.getKeyText(e.getKeyCode()));
         }
     }
+
     @Override
     public void keyReleased(KeyEvent e) {
         final int keyCode = e.getKeyCode();
@@ -72,6 +107,11 @@ public class InputController implements KeyListener {
         }
     }
 
+    /**
+     * Gets the singleton instance of InputController.
+     *
+     * @return The InputController instance.
+     */
     public static InputController getInstance() {
         if (instance == null) {
             instance = new InputController();
@@ -79,3 +119,4 @@ public class InputController implements KeyListener {
         return instance;
     }
 }
+
