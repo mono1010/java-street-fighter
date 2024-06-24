@@ -77,6 +77,8 @@ public class InputController implements KeyListener {
         player2.left = keys[KeyEvent.VK_LEFT];
         player2.right = keys[KeyEvent.VK_RIGHT];
         player2.down = keys[KeyEvent.VK_DOWN];
+        player2.attack1 = keys[KeyEvent.VK_K];
+        player2.attack2 = keys[KeyEvent.VK_L];
     }
 
     @Override
