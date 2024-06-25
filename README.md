@@ -19,6 +19,10 @@ Es werden nur einfache Schläge implementiert werden.
 Bei dem Start einer Runde werden die Spieler Links und Rechts platziert und ein Countdown startet welcher auf 0 zählt.
 Rechts befindet sich immer der NPC.
 
+## Entwicklung
+
+Informationen zu der Entwicklung können im [documentation](./documentation/README.md) Ordner gefunden werden.
+
 ## Installation
 
 Offiziell wird MacOS Sonoma unterstützt, Windows sollte jedoch auch funktionieren.
