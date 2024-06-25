@@ -47,3 +47,11 @@ Die Dokumentation kann mit den folgenden Befehlen generiert werden:
 ## Testumgebung
 
 Getestet wurde das Spiel auf MacOS Sonoma.
+
+## Assets
+
+Alle Assets sind kostenlos auf https://itch.io/ verfügbar.
+
+## Credits
+
+- [luizmelo](https://luizmelo.itch.io) für die [Martial Hero 2](https://luizmelo.itch.io/martial-hero-2) und [Fantasy Warrior](https://luizmelo.itch.io/fantasy-warrior) Assets
