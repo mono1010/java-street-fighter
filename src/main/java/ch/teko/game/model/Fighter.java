@@ -309,11 +309,29 @@ public class Fighter extends Entity {
         int sizeX = width - image.getMinX();
         int sizeY = height - image.getMinY();
 
-        if (this.animate.getFlipAsset() == true) {
-            return new Rectangle(this.x + (sizeX / 2) - 15, this.y + (sizeY / 2) - 25, 25, 55);
-        } else {
-            return new Rectangle(this.x + (sizeX / 2) - 15, this.y + (sizeY / 2) - 25, 25, 55);
+        Rectangle rect = new Rectangle(this.x + (sizeX / 2) - 15, this.y + (sizeY / 2) - 25, 25, 55);
+
+        int offsetWidth = 0;
+        int offsetHeight = 0;
+        switch (this.animate.getCurrentAsset().state) {
+            case ATTACK1:
+                offsetWidth += 10;
+                break;
+            case ATTACK2:
+                offsetWidth += 20;
+                break;
+            default:
+                break;
         }
+
+        if (this.animate.getFlipAsset() == true) {
+            rect.x -= offsetWidth;
+            rect.width += offsetWidth;
+        } else {
+            rect.width += offsetWidth;
+        }
+
+        return rect;
     }
 
     public void setPositionRelativeToAABB(int width, int height) {
