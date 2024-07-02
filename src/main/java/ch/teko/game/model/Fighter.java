@@ -322,13 +322,25 @@ public class Fighter extends Entity {
                 if (this.animate.getAnimationIndex() == this.animate.getAnimationMaxIndex() - 2) {
                     int offsetWidth = 85;
                     if (this.animate.getFlipAsset() == true) {
-                        rect = Optional.of(new Rectangle(this.x + (sizeX / 2) - offsetWidth, this.y + (sizeY / 2) - 30, offsetWidth, 60));
+                        rect = Optional.of(new Rectangle(this.x + (sizeX / 2) - offsetWidth, this.y + (sizeY / 2) - 30,
+                                offsetWidth, 60));
                     } else {
-                        rect = Optional.of(new Rectangle(this.x + (sizeX / 2), this.y + (sizeY / 2) - 30, offsetWidth, 60));
+                        rect = Optional
+                                .of(new Rectangle(this.x + (sizeX / 2), this.y + (sizeY / 2) - 30, offsetWidth, 60));
                     }
                 }
                 break;
             case ATTACK2:
+                if (this.animate.getAnimationIndex() == this.animate.getAnimationMaxIndex() - 2) {
+                    int offsetWidth = 87;
+                    if (this.animate.getFlipAsset() == true) {
+                        rect = Optional.of(new Rectangle(this.x + (sizeX / 2) - offsetWidth, this.y + (sizeY / 2) - 55,
+                                offsetWidth, 85));
+                    } else {
+                        rect = Optional
+                                .of(new Rectangle(this.x + (sizeX / 2), this.y + (sizeY / 2) - 55, offsetWidth, 85));
+                    }
+                }
                 break;
             default:
                 break;
