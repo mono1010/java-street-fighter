@@ -47,7 +47,8 @@ class Timer {
 }
 
 class AnimationState {
-    float velocityX, velocityY;
+    public float velocityX, velocityY;
+    public boolean canRun = true;
 
     private int currentAnimationIterations = 0;
     private int animationIterations = 0;
@@ -73,6 +74,7 @@ class AnimationState {
         this.animationIterations = 0;
         this.tickesUsedForAnimation = 0;
         this.maxTicksForAnimation = 0;
+        this.canRun = true;
     }
 
     boolean reached(int iterations) {
@@ -162,6 +164,7 @@ class AnimationState {
             currentAnimation = Optional.of(animation);
             this.reset();
             this.animationIterations = 1;
+            this.canRun = false;
             return;
         }
 
@@ -249,10 +252,12 @@ public class Fighter extends Entity {
     }
 
     void setVelocity() {
-        if (this.input.right) {
-            this.velocityX += this.walkSpeed;
-        } else if (this.input.left) {
-            this.velocityX -= this.walkSpeed;
+        if (this.animationState.canRun) {
+            if (this.input.right) {
+                this.velocityX += this.walkSpeed;
+            } else if (this.input.left) {
+                this.velocityX -= this.walkSpeed;
+            }
         }
 
         if (this.animate.getCurrentAsset().state == Asset.State.JUMP) {
