@@ -300,6 +300,41 @@ public class Fighter extends Entity {
         Rectangle boundingBox = this.getAABB();
         g.setColor(Color.RED);
         g.drawRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+
+        Optional<Rectangle> hitBoxOptional = this.getHitBox();
+        if (hitBoxOptional.isPresent()) {
+            Rectangle hitBox = hitBoxOptional.get();
+            g.setColor(Color.ORANGE);
+            g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+        }
+    }
+
+    public Optional<Rectangle> getHitBox() {
+        BufferedImage image = this.animate.get();
+        int width = image.getWidth() - 1;
+        int height = image.getHeight() - 1;
+        int sizeX = width - image.getMinX();
+        int sizeY = height - image.getMinY();
+
+        Optional<Rectangle> rect = Optional.empty();
+        switch (this.animate.getCurrentAsset().state) {
+            case ATTACK1:
+                if (this.animate.getAnimationIndex() == this.animate.getAnimationMaxIndex() - 2) {
+                    int offsetWidth = 85;
+                    if (this.animate.getFlipAsset() == true) {
+                        rect = Optional.of(new Rectangle(this.x + (sizeX / 2) - offsetWidth, this.y + (sizeY / 2) - 30, offsetWidth, 60));
+                    } else {
+                        rect = Optional.of(new Rectangle(this.x + (sizeX / 2), this.y + (sizeY / 2) - 30, offsetWidth, 60));
+                    }
+                }
+                break;
+            case ATTACK2:
+                break;
+            default:
+                break;
+        }
+
+        return rect;
     }
 
     public Rectangle getAABB() {
