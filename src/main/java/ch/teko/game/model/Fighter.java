@@ -307,6 +307,9 @@ public class Fighter extends Entity {
             g.setColor(Color.ORANGE);
             g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
         }
+
+        g.setColor(Color.BLACK);
+        g.drawString("Frame: " + this.animate.getAnimationIndex(), boundingBox.x, boundingBox.y - 10);
     }
 
     public Optional<Rectangle> getHitBox() {
