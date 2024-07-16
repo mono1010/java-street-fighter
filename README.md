@@ -8,7 +8,7 @@ Street Fighter ist ein 2D 1v1 Kampfspiel bei welchem zwei Gegner gegeneinander a
 Damit der Spieler gewinnen kann muss er zwei Runden gewinnen.
 
 Eine Runde wird beendet sobald einer der Spieler kein Leben mehr hat.
-Die Health wird von beiden Spielern angezeigt.
+Das Leben wird von beiden Spielern angezeigt.
 
 Die Map ist so gross wie das Game Fenster.
 Es gibt keine Möglichkeit mit der Map zu interagieren.
