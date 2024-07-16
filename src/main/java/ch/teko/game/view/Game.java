@@ -105,6 +105,7 @@ public class Game extends JPanel {
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
     Floor.getInstance().onRender(g);
+    Health.getInstance().onRender(g);
 
     if (!menu.onRender(g))
       f1.onRender(g);

@@ -150,6 +150,7 @@ class AnimationState {
             currentAnimation = Optional.of(animation);
             this.reset();
             this.animationIterations = 1;
+            this.canRun = false;
             return;
         }
 
@@ -192,6 +193,9 @@ class AnimationState {
 
 public class Fighter extends Entity {
     private float walkSpeed = 5;
+    private float health = 100;
+    private float maxHealth = 100;
+
     private boolean isPlayer1;
 
     private AssetsManager assetsManager;
@@ -269,6 +273,22 @@ public class Fighter extends Entity {
             this.velocityY += 6;
             return;
         }
+    }
+
+    public float getMaxHealth() {
+        return this.maxHealth;
+    }
+
+    public float getHealth() {
+        return this.health;
+    }
+
+    public boolean isDead() {
+        return this.health == 0.f;
+    }
+
+    public void damage(float damage) {
+        this.health = Math.max(0, this.health - damage);
     }
 
     @Override
