@@ -54,7 +54,7 @@ public class InputController implements KeyListener {
      * Constructs a new InputController.
      */
     public InputController() {
-        keys = new boolean[KeyEvent.VK_Z];
+        keys = new boolean[KeyEvent.VK_BEGIN];
         players = new PlayerControlls[2];
         players[0] = new PlayerControlls();
         players[1] = new PlayerControlls();
@@ -66,19 +66,22 @@ public class InputController implements KeyListener {
      * Updates the input state on each game tick.
      */
     public void onTick() {
-        player1.up = keys[KeyEvent.VK_W];
-        player1.left = keys[KeyEvent.VK_A];
-        player1.right = keys[KeyEvent.VK_D];
-        player1.down = keys[KeyEvent.VK_S];
-        player1.attack1 = keys[KeyEvent.VK_C];
-        player1.attack2 = keys[KeyEvent.VK_V];
+        FighterSettings settingsPlayer1 = Settings.getInstance().getFighter1();
+        FighterSettings settingsPlayer2 = Settings.getInstance().getFighter2();
 
-        player2.up = keys[KeyEvent.VK_UP];
-        player2.left = keys[KeyEvent.VK_LEFT];
-        player2.right = keys[KeyEvent.VK_RIGHT];
-        player2.down = keys[KeyEvent.VK_DOWN];
-        player2.attack1 = keys[KeyEvent.VK_K];
-        player2.attack2 = keys[KeyEvent.VK_L];
+        player1.up = keys[settingsPlayer1.getUpKey()];
+        player1.left = keys[settingsPlayer1.getLeftKey()];
+        player1.right = keys[settingsPlayer1.getRightKey()];
+        player1.down = keys[settingsPlayer1.getDownKey()];
+        player1.attack1 = keys[settingsPlayer1.getAttack1Key()];
+        player1.attack2 = keys[settingsPlayer1.getAttack2Key()];
+
+        player2.up = keys[settingsPlayer2.getUpKey()];
+        player2.left = keys[settingsPlayer2.getLeftKey()];
+        player2.right = keys[settingsPlayer2.getRightKey()];
+        player2.down = keys[settingsPlayer2.getDownKey()];
+        player2.attack1 = keys[settingsPlayer2.getAttack1Key()];
+        player2.attack2 = keys[settingsPlayer2.getAttack2Key()];
     }
 
     @Override
@@ -93,20 +96,16 @@ public class InputController implements KeyListener {
         if (keyCode == KeyEvent.VK_ESCAPE)
             this.escape = true;
 
-        if (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_Z) {
-            this.keys[e.getKeyCode()] = true;
-            this.log.trace("Key pressed {}", KeyEvent.getKeyText(e.getKeyCode()));
-        }
+        this.keys[e.getKeyCode()] = true;
+        this.log.trace("Key pressed {}", KeyEvent.getKeyText(e.getKeyCode()));
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         final int keyCode = e.getKeyCode();
 
-        if (keyCode >= KeyEvent.VK_LEFT && keyCode <= KeyEvent.VK_Z) {
-            this.keys[e.getKeyCode()] = false;
-            this.log.trace("Key released {}", KeyEvent.getKeyText(e.getKeyCode()));
-        }
+        this.keys[e.getKeyCode()] = false;
+        this.log.trace("Key released {}", KeyEvent.getKeyText(e.getKeyCode()));
     }
 
     /**
@@ -121,4 +120,3 @@ public class InputController implements KeyListener {
         return instance;
     }
 }
-

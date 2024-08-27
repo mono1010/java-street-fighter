@@ -2,6 +2,13 @@ package ch.teko.game.view;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,13 +27,30 @@ public class Game extends JPanel {
 
   Fighter f1, f2;
   Menu menu;
+
+  void loadSettings() {
+      Settings.getInstance().load();
+  }
+
+  void saveSettingsHook(JFrame frame) {
+    frame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent event) {
+       Settings.getInstance().save();
+      }
+    });
+  }
+
   public Game(String assetsPath) {
+    loadSettings();
+
     Map.getInstance().setWidth(600);
     Map.getInstance().setHeight(400);
     final int height = Map.getInstance().getHeight();
     final int width = Map.getInstance().getWidth();
 
     JFrame frame = new JFrame("Street Fighter");
+    saveSettingsHook(frame);
     
     Floor.getInstance().setHeight(height - 50);
 
