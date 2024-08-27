@@ -2,7 +2,7 @@
 
 ## Wireframe
 
-Für eine erste visuelle Ansicht wurden Wireframes vom Game, Menü und den Menü Settings erstellt.
+Für eine erste visuelle Ansicht wurden Wireframes vom Game, Menü und den Startmenü Settings erstellt.
 
 ### Menü
 
