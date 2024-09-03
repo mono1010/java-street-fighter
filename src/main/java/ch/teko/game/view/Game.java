@@ -147,7 +147,7 @@ public class Game extends JFrame {
 
     gameView.setBounds(0, 0, this.getWidth(), this.getHeight());
     menuView.setBounds(0, 0, this.getWidth(), this.getHeight());
-    winnerView.setBounds(0, 0, this.getWidth(), this.getBounds().height - 10);
+    winnerView.setBounds(0, 0, this.getWidth(), this.getBounds().height);
 
     layeredPane.add(gameView, JLayeredPane.DEFAULT_LAYER);
     layeredPane.add(menuView, JLayeredPane.PALETTE_LAYER);
