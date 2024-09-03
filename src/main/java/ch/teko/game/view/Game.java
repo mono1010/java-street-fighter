@@ -111,6 +111,7 @@ public class Game extends JFrame {
 
   private GameView gameView;
   private Menu menuView;
+  private Winner winnerView;
 
   void loadSettings() {
     Settings.getInstance().load();
@@ -139,15 +140,18 @@ public class Game extends JFrame {
 
     this.gameView = new GameView(assetsPath);
     this.menuView = new Menu((JFrame) this);
+    this.winnerView = new Winner();
 
     JLayeredPane layeredPane = new JLayeredPane();
     this.setContentPane(layeredPane);
 
     gameView.setBounds(0, 0, this.getWidth(), this.getHeight());
     menuView.setBounds(0, 0, this.getWidth(), this.getHeight());
+    winnerView.setBounds(0, 0, this.getWidth(), this.getBounds().height - 10);
 
     layeredPane.add(gameView, JLayeredPane.DEFAULT_LAYER);
     layeredPane.add(menuView, JLayeredPane.PALETTE_LAYER);
+    layeredPane.add(winnerView, JLayeredPane.PALETTE_LAYER);
 
     if (!this.instantStart) {
       menuView.openMenu(true);
@@ -223,6 +227,20 @@ public class Game extends JFrame {
 
         if (roundEnd)
           break;
+      }
+
+      if (player1Wins == 2) {
+          this.winnerView.player1Won();
+          player1Wins = 0;
+          player2Wins = 0;
+          requestFocus();
+      }
+
+      if (player2Wins == 2) {
+          this.winnerView.player2Won();
+          player1Wins = 0;
+          player2Wins = 0;
+          requestFocus();
       }
 
       this.gameView.reset();
