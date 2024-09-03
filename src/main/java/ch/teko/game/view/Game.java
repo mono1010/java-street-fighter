@@ -28,6 +28,8 @@ class GameView extends JPanel {
 
   Fighter f1, f2;
 
+  final int startOffset = 80;
+
   public GameView(String assetsPath) {
     Map.getInstance().setWidth(600);
     Map.getInstance().setHeight(400);
@@ -37,14 +39,53 @@ class GameView extends JPanel {
 
     Floor.getInstance().setHeight(height - 50);
 
-    final int startOffset = 80;
     f1 = new Fighter(startOffset, Floor.getInstance().getHeight(), true, assetsPath);
     f2 = new Fighter(width - startOffset, Floor.getInstance().getHeight(), false, assetsPath);
+  }
+
+  public void reset() {
+    final int height = Map.getInstance().getHeight();
+    final int width = Map.getInstance().getWidth();
+    f1 = new Fighter(startOffset, Floor.getInstance().getHeight(), true, f1.getAssetsManager());
+    f2 = new Fighter(width - startOffset, Floor.getInstance().getHeight(), false, f2.getAssetsManager());
+  }
+
+  public boolean player1Won() {
+    return f2.isDead();
+  }
+
+  public boolean player2Won() {
+    return f1.isDead();
+  }
+
+  void player1Attack() {
+    Optional<Rectangle> hitBoxOptional = f1.getHitBox();
+    if (hitBoxOptional.isPresent()) {
+      Rectangle hitBox = hitBoxOptional.get();
+      Rectangle aabb = f2.getAABB();
+      if (hitBox.intersects(aabb)) {
+        f2.damage(7);
+      }
+    }
+  }
+
+  void player2Attack() {
+    Optional<Rectangle> hitBoxOptional = f2.getHitBox();
+    if (hitBoxOptional.isPresent()) {
+      Rectangle hitBox = hitBoxOptional.get();
+      Rectangle aabb = f1.getAABB();
+      if (hitBox.intersects(aabb)) {
+        f1.damage(7);
+      }
+    }
   }
 
   void loop() {
     f1.onTick();
     f2.onTick();
+
+    player1Attack();
+    player2Attack();
 
     Health.getInstance().setHealth(f1.getHealth(), f1.getMaxHealth(), f2.getHealth(), f2.getMaxHealth());
   }
@@ -97,72 +138,94 @@ public class Game extends JFrame {
     this.addKeyListener(InputController.getInstance());
 
     this.gameView = new GameView(assetsPath);
-    this.menuView = new Menu((JFrame)this);
+    this.menuView = new Menu((JFrame) this);
 
     JLayeredPane layeredPane = new JLayeredPane();
     this.setContentPane(layeredPane);
 
     gameView.setBounds(0, 0, this.getWidth(), this.getHeight());
     menuView.setBounds(0, 0, this.getWidth(), this.getHeight());
-    
+
     layeredPane.add(gameView, JLayeredPane.DEFAULT_LAYER);
     layeredPane.add(menuView, JLayeredPane.PALETTE_LAYER);
 
     if (!this.instantStart) {
       menuView.openMenu(true);
-    } 
+    }
 
     this.setVisible(true);
 
     final int TICKS = 60;
     final double nsPerTick = 1000000000 / TICKS;
 
-    int ticks = 0;
-    int frames = 0;
-    long lastTime = System.nanoTime();
-    long lastTimer = System.currentTimeMillis();
-    double delta = 0;
-
+    int player1Wins = 0;
+    int player2Wins = 0;
     while (true) {
-      if (InputController.getInstance().escape) {
-        if (!this.menuView.isOpen())
-          menuView.openMenu(true);
+      int ticks = 0;
+      int frames = 0;
+      long lastTime = System.nanoTime();
+      long lastTimer = System.currentTimeMillis();
+      double delta = 0;
+      boolean roundEnd = false;
 
-        InputController.getInstance().escape = false;
+      while (true) {
+        if (InputController.getInstance().escape) {
+          if (!this.menuView.isOpen())
+            menuView.openMenu(true);
+
+          InputController.getInstance().escape = false;
+        }
+
+        long now = System.nanoTime();
+        delta += (now - lastTime) / nsPerTick;
+        lastTime = now;
+
+        while (delta >= 1) {
+          ticks++;
+
+          InputController.getInstance().onTick();
+
+          // Soft freeze the game
+          if (!this.menuView.isOpen())
+            this.gameView.loop();
+
+          if (this.gameView.player1Won()) {
+            player1Wins++;
+            roundEnd = true;
+            break;
+          }
+
+          if (this.gameView.player2Won()) {
+            player2Wins++;
+            roundEnd = true;
+            break;
+          }
+
+          delta--;
+        }
+
+        try {
+          Thread.sleep(10);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+
+        frames++;
+
+        this.gameView.repaint();
+
+        if (System.currentTimeMillis() - lastTimer > 1000) {
+          log.info("ticks {} frames {}", ticks, frames);
+          lastTimer += 1000;
+          frames = 0;
+          ticks = 0;
+        }
+
+        if (roundEnd)
+          break;
       }
 
-      long now = System.nanoTime();
-      delta += (now - lastTime) / nsPerTick;
-      lastTime = now;
-
-      while (delta >= 1) {
-        ticks++;
-
-        InputController.getInstance().onTick();
-
-        // Soft freeze the game
-        if (!this.menuView.isOpen())
-          this.gameView.loop();
-
-        delta--;
-      }
-
-      try {
-        Thread.sleep(10);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-
-      frames++;
-
-      this.gameView.repaint();
-
-      if (System.currentTimeMillis() - lastTimer > 1000) {
-        log.info("ticks {} frames {}", ticks, frames);
-        lastTimer += 1000;
-        frames = 0;
-        ticks = 0;
-      }
+      this.gameView.reset();
     }
   }
 }

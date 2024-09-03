@@ -221,6 +221,23 @@ public class Fighter extends Entity {
         setPositionRelativeToAABB(x, y);
     }
 
+    public Fighter(int x, int y, boolean isPlayer1, AssetsManager assetsManager) {
+        super(x, y, 0, 0);
+
+        this.isPlayer1 = isPlayer1;
+        this.assetsManager = assetsManager;
+        this.animate = new Animate();
+        this.animate.animate(this.assetsManager.getAsset(Asset.State.IDLE));
+        this.animationState = new AnimationState(animate, assetsManager);
+        this.input = this.getInputController();
+
+        setPositionRelativeToAABB(x, y);
+    }
+
+    public AssetsManager getAssetsManager() {
+        return this.assetsManager;
+    }
+
     PlayerControlls getInputController() {
         if (isPlayer1)
             return InputController.getInstance().player1;
