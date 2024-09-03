@@ -69,19 +69,19 @@ public class InputController implements KeyListener {
         FighterSettings settingsPlayer1 = Settings.getInstance().getFighter1();
         FighterSettings settingsPlayer2 = Settings.getInstance().getFighter2();
 
-        player1.up = keys[settingsPlayer1.getUpKey()];
-        player1.left = keys[settingsPlayer1.getLeftKey()];
-        player1.right = keys[settingsPlayer1.getRightKey()];
-        player1.down = keys[settingsPlayer1.getDownKey()];
-        player1.attack1 = keys[settingsPlayer1.getAttack1Key()];
-        player1.attack2 = keys[settingsPlayer1.getAttack2Key()];
+        player1.up = keys[settingsPlayer1.getKey(Keys.UP)];
+        player1.left = keys[settingsPlayer1.getKey(Keys.LEFT)];
+        player1.right = keys[settingsPlayer1.getKey(Keys.RIGHT)];
+        player1.down = keys[settingsPlayer1.getKey(Keys.DOWN)];
+        player1.attack1 = keys[settingsPlayer1.getKey(Keys.ATTACK1)];
+        player1.attack2 = keys[settingsPlayer1.getKey(Keys.ATTACK2)];
 
-        player2.up = keys[settingsPlayer2.getUpKey()];
-        player2.left = keys[settingsPlayer2.getLeftKey()];
-        player2.right = keys[settingsPlayer2.getRightKey()];
-        player2.down = keys[settingsPlayer2.getDownKey()];
-        player2.attack1 = keys[settingsPlayer2.getAttack1Key()];
-        player2.attack2 = keys[settingsPlayer2.getAttack2Key()];
+        player2.up = keys[settingsPlayer2.getKey(Keys.UP)];
+        player2.left = keys[settingsPlayer2.getKey(Keys.LEFT)];
+        player2.right = keys[settingsPlayer2.getKey(Keys.RIGHT)];
+        player2.down = keys[settingsPlayer2.getKey(Keys.DOWN)];
+        player2.attack1 = keys[settingsPlayer2.getKey(Keys.ATTACK1)];
+        player2.attack2 = keys[settingsPlayer2.getKey(Keys.ATTACK2)];
     }
 
     @Override

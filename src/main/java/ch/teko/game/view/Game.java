@@ -1,6 +1,9 @@
 package ch.teko.game.view;
 
+import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -14,59 +17,102 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import ch.teko.game.*;
 import ch.teko.game.model.*;
 import ch.teko.game.controllers.*;
 
-public class Game extends JPanel {
+class GameView extends JPanel {
+
+  Fighter f1, f2;
+
+  public GameView(String assetsPath) {
+    Map.getInstance().setWidth(600);
+    Map.getInstance().setHeight(400);
+
+    final int height = Map.getInstance().getHeight();
+    final int width = Map.getInstance().getWidth();
+
+    Floor.getInstance().setHeight(height - 50);
+
+    final int startOffset = 80;
+    f1 = new Fighter(startOffset, Floor.getInstance().getHeight(), true, assetsPath);
+    f2 = new Fighter(width - startOffset, Floor.getInstance().getHeight(), false, assetsPath);
+  }
+
+  void loop() {
+    f1.onTick();
+    f2.onTick();
+
+    Health.getInstance().setHealth(f1.getHealth(), f1.getMaxHealth(), f2.getHealth(), f2.getMaxHealth());
+  }
+
+  @Override
+  protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    Floor.getInstance().onRender(g);
+    Health.getInstance().onRender(g);
+
+    f1.onRender(g);
+    f2.onRender(g);
+  }
+}
+
+public class Game extends JFrame {
   private final boolean instantStart = true;
+
+  private final int WIDTH = 600;
+  private final int HEIGHT = 400;
 
   private Logger log = LogManager.getLogger(Main.class);
 
-  Fighter f1, f2;
-  Menu menu;
+  private GameView gameView;
+  private Menu menuView;
 
   void loadSettings() {
-      Settings.getInstance().load();
+    Settings.getInstance().load();
   }
 
   void saveSettingsHook(JFrame frame) {
     frame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent event) {
-       Settings.getInstance().save();
+        Settings.getInstance().save();
       }
     });
   }
 
   public Game(String assetsPath) {
     loadSettings();
+    saveSettingsHook(this);
 
-    Map.getInstance().setWidth(600);
-    Map.getInstance().setHeight(400);
-    final int height = Map.getInstance().getHeight();
-    final int width = Map.getInstance().getWidth();
+    this.setTitle("Street Fighter");
 
-    JFrame frame = new JFrame("Street Fighter");
-    saveSettingsHook(frame);
+    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    this.setSize(WIDTH, HEIGHT);
+    this.setAlwaysOnTop(true);
+    this.setResizable(false);
+    this.addKeyListener(InputController.getInstance());
+
+    this.gameView = new GameView(assetsPath);
+    this.menuView = new Menu((JFrame)this);
+
+    JLayeredPane layeredPane = new JLayeredPane();
+    this.setContentPane(layeredPane);
+
+    gameView.setBounds(0, 0, this.getWidth(), this.getHeight());
+    menuView.setBounds(0, 0, this.getWidth(), this.getHeight());
     
-    Floor.getInstance().setHeight(height - 50);
+    layeredPane.add(gameView, JLayeredPane.DEFAULT_LAYER);
+    layeredPane.add(menuView, JLayeredPane.PALETTE_LAYER);
 
-    final int startOffset = 80;
-    f1 = new Fighter(startOffset, Floor.getInstance().getHeight(), true, assetsPath);
-    f2 = new Fighter(width - startOffset, Floor.getInstance().getHeight(), false, assetsPath);
+    if (!this.instantStart) {
+      menuView.openMenu(true);
+    } 
 
-    this.menu = new Menu(frame);
-    frame.getContentPane().add(this);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize(width, height);
-    frame.setVisible(true);
-    frame.setAlwaysOnTop(true);
-    frame.setResizable(false);
-    
-    frame.addKeyListener(InputController.getInstance());
+    this.setVisible(true);
 
     final int TICKS = 60;
     final double nsPerTick = 1000000000 / TICKS;
@@ -77,34 +123,27 @@ public class Game extends JPanel {
     long lastTimer = System.currentTimeMillis();
     double delta = 0;
 
-    if (!this.instantStart)
-      menu.openMenu(true);
-
     while (true) {
-      while (menu.isOpen()) {
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-      
       if (InputController.getInstance().escape) {
-        menu.openMenu(false);
-        repaint();
+        if (!this.menuView.isOpen())
+          menuView.openMenu(true);
+
         InputController.getInstance().escape = false;
-        continue;
       }
-      
+
       long now = System.nanoTime();
       delta += (now - lastTime) / nsPerTick;
       lastTime = now;
 
       while (delta >= 1) {
         ticks++;
+
         InputController.getInstance().onTick();
-        f1.onTick();
-        f2.onTick();
+
+        // Soft freeze the game
+        if (!this.menuView.isOpen())
+          this.gameView.loop();
+
         delta--;
       }
 
@@ -115,7 +154,8 @@ public class Game extends JPanel {
       }
 
       frames++;
-      repaint();
+
+      this.gameView.repaint();
 
       if (System.currentTimeMillis() - lastTimer > 1000) {
         log.info("ticks {} frames {}", ticks, frames);
@@ -124,15 +164,5 @@ public class Game extends JPanel {
         ticks = 0;
       }
     }
-  }
-
-  protected void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    Floor.getInstance().onRender(g);
-    Health.getInstance().onRender(g);
-
-    if (!menu.onRender(g))
-      f1.onRender(g);
-      f2.onRender(g);
   }
 }
