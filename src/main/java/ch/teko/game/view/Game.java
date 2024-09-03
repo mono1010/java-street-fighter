@@ -175,7 +175,7 @@ public class Game extends JFrame {
       while (true) {
         if (InputController.getInstance().escape) {
           if (!this.menuView.isOpen())
-            menuView.openMenu(true);
+            menuView.openMenu(false);
 
           InputController.getInstance().escape = false;
         }
