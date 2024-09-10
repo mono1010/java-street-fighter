@@ -93,6 +93,9 @@ class GameView extends JPanel {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
+
+    StartCounter.getInstance().draw(g);
+
     Floor.getInstance().onRender(g);
     Health.getInstance().onRender(g);
 
@@ -102,7 +105,9 @@ class GameView extends JPanel {
 }
 
 public class Game extends JFrame {
-  private final boolean instantStart = true;
+
+  // skip th start-up menu, only for debugging purposes
+  private final boolean instantStart = false;
 
   private final int WIDTH = 600;
   private final int HEIGHT = 400;
@@ -159,6 +164,16 @@ public class Game extends JFrame {
 
     this.setVisible(true);
 
+    while (this.menuView.isOpen()) {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    StartCounter.getInstance().start();
+
     final int TICKS = 60;
     final double nsPerTick = 1000000000 / TICKS;
 
@@ -189,8 +204,10 @@ public class Game extends JFrame {
 
           InputController.getInstance().onTick();
 
+          boolean softFreeze = this.menuView.isOpen() || StartCounter.getInstance().isRunning();
+
           // Soft freeze the game
-          if (!this.menuView.isOpen())
+          if (!softFreeze)
             this.gameView.loop();
 
           if (this.gameView.player1Won()) {
@@ -229,21 +246,28 @@ public class Game extends JFrame {
           break;
       }
 
+      boolean gameEnded = false;
       if (player1Wins == 2) {
-          this.winnerView.player1Won();
-          player1Wins = 0;
-          player2Wins = 0;
-          requestFocus();
+        this.winnerView.player1Won();
+        player1Wins = 0;
+        player2Wins = 0;
+        gameEnded = true;
+        requestFocus();
       }
 
       if (player2Wins == 2) {
-          this.winnerView.player2Won();
-          player1Wins = 0;
-          player2Wins = 0;
-          requestFocus();
+        this.winnerView.player2Won();
+        player1Wins = 0;
+        player2Wins = 0;
+        gameEnded = true;
+        requestFocus();
       }
 
       this.gameView.reset();
+
+      if (gameEnded) {
+        StartCounter.getInstance().start();
+      }
     }
   }
 }
