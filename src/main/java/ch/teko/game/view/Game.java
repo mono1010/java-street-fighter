@@ -37,6 +37,9 @@ public class Game extends JPanel {
 
         f1 = new Fighter(startOffset, Floor.getInstance().getHeight(), true, assetsPath);
         f2 = new Fighter(width - startOffset, Floor.getInstance().getHeight(), false, assetsPath);
+        f2.flipAsset();
+
+        Health.getInstance().setHealth(f1.getHealth(), f1.getMaxHealth(), f2.getHealth(), f2.getMaxHealth());
     }
 
     /**
@@ -48,6 +51,9 @@ public class Game extends JPanel {
         final int width = Map.getInstance().getWidth();
         f1 = new Fighter(startOffset, Floor.getInstance().getHeight(), true, f1.getAssetsManager());
         f2 = new Fighter(width - startOffset, Floor.getInstance().getHeight(), false, f2.getAssetsManager());
+        f2.flipAsset();
+
+        Health.getInstance().setHealth(f1.getHealth(), f1.getMaxHealth(), f2.getHealth(), f2.getMaxHealth());
     }
 
     /**

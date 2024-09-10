@@ -238,6 +238,10 @@ public class Fighter extends Entity {
         return this.assetsManager;
     }
 
+    public void flipAsset() {
+        this.animate.flipAsset();
+    }
+
     PlayerControlls getInputController() {
         if (isPlayer1)
             return InputController.getInstance().player1;
