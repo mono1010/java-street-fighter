@@ -23,23 +23,47 @@ enum AnimationUnlockAction {
     FALL,
 }
 
+/**
+ * The {@code Fighter} class represents a player-controlled fighter in a game.
+ * It extends the {@code Entity} class
+ */
 public class Fighter extends Entity {
+
+    // Movement speed of the fighter
     private float walkSpeed = 5;
+
+    // Health properties of the fighter
     private float health = 100;
     private float maxHealth = 100;
 
+    // Flag to indicate whether this fighter is player 1
     private boolean isPlayer1;
 
+    // Manages assets and animations for the fighter
     private AssetsManager assetsManager;
     private Animate animate;
 
+    // Flag to track if the fighter is jumping
     boolean isJumping = false;
 
+    // Manages animation state transitions
     AnimationState animationState;
+
+    // Handles input controls for the fighter
     PlayerControlls input;
 
+    // Logger for debugging purposes
     private Logger log = LogManager.getLogger(Main.class);
 
+    /**
+     * Constructs a new {@code Fighter} instance, initializing it with the given position,
+     * player identifier, and asset directory.
+     *
+     * @param x          the initial X-coordinate of the fighter.
+     * @param y          the initial Y-coordinate of the fighter.
+     * @param isPlayer1  flag to indicate if this fighter is player 1.
+     * @param assetsDir  the directory containing the assets for this fighter.
+     */
     public Fighter(int x, int y, boolean isPlayer1, String assetsDir) {
         super(x, y, 0, 0);
 
@@ -53,6 +77,15 @@ public class Fighter extends Entity {
         setPositionRelativeToAABB(x, y);
     }
 
+    /**
+     * Constructs a new {@code Fighter} instance, initializing it with the given position,
+     * player identifier, and an existing {@code AssetsManager}.
+     *
+     * @param x             the initial X-coordinate of the fighter.
+     * @param y             the initial Y-coordinate of the fighter.
+     * @param isPlayer1     flag to indicate if this fighter is player 1.
+     * @param assetsManager the {@code AssetsManager} managing the fighter's assets.
+     */
     public Fighter(int x, int y, boolean isPlayer1, AssetsManager assetsManager) {
         super(x, y, 0, 0);
 
@@ -66,14 +99,29 @@ public class Fighter extends Entity {
         setPositionRelativeToAABB(x, y);
     }
 
+    /**
+     * Retrieves the assets manager associated with the fighter.
+     *
+     * @return the {@code AssetsManager} for the fighter.
+     */
     public AssetsManager getAssetsManager() {
         return this.assetsManager;
     }
 
+    /**
+     * Toggles the flipping of the fighter's assets.
+     * This is useful for rendering the fighter facing in the opposite direction.
+     */
     public void flipAsset() {
         this.animate.flipAsset();
     }
 
+    /**
+     * Retrieves the input controller for the fighter.
+     * Player 1 uses {@code player1} controls, and Player 2 uses {@code player2} controls.
+     *
+     * @return the {@code PlayerControlls} object associated with the fighter.
+     */
     PlayerControlls getInputController() {
         if (isPlayer1)
             return InputController.getInstance().player1;
@@ -81,12 +129,16 @@ public class Fighter extends Entity {
             return InputController.getInstance().player2;
     }
 
+    /**
+     * Sets the animation state based on the fighter's input, such as moving or attacking.
+     * It also handles flipping the asset if necessary.
+     */
     void setAnimation() {
         if (this.input.right) {
-            if (this.animate.getFlipAsset() != false)
+            if (!this.animate.getFlipAsset())
                 this.animate.flipAsset();
         } else if (this.input.left) {
-            if (this.animate.getFlipAsset() != true)
+            if (this.animate.getFlipAsset())
                 this.animate.flipAsset();
         }
 
@@ -108,6 +160,9 @@ public class Fighter extends Entity {
         animationState.triggerAnimation(Asset.State.IDLE);
     }
 
+    /**
+     * Updates the fighter's velocity based on the current input and animation state.
+     */
     void setVelocity() {
         if (this.animationState.canRun) {
             if (this.input.right) {
@@ -128,22 +183,46 @@ public class Fighter extends Entity {
         }
     }
 
+    /**
+     * Retrieves the maximum health of the fighter.
+     *
+     * @return the maximum health value.
+     */
     public float getMaxHealth() {
         return this.maxHealth;
     }
 
+    /**
+     * Retrieves the current health of the fighter.
+     *
+     * @return the current health value.
+     */
     public float getHealth() {
         return this.health;
     }
 
+    /**
+     * Checks if the fighter is dead.
+     *
+     * @return {@code true} if the fighter's health is 0, otherwise {@code false}.
+     */
     public boolean isDead() {
         return this.health == 0.f;
     }
 
+    /**
+     * Reduces the fighter's health by the specified amount of damage.
+     *
+     * @param damage the amount of damage to inflict on the fighter.
+     */
     public void damage(float damage) {
         this.health = Math.max(0, this.health - damage);
     }
 
+    /**
+     * Updates the fighter's state and position on each game tick, adjusting animations,
+     * velocity, and ensuring the fighter stays within the map boundaries.
+     */
     @Override
     public void onTick() {
         this.animationState.onTick();
@@ -170,6 +249,11 @@ public class Fighter extends Entity {
         }
     }
 
+    /**
+     * Renders the fighter on the screen, including its current animation and hitbox.
+     *
+     * @param g the {@code Graphics} object used for rendering.
+     */
     @Override
     public void onRender(Graphics g) {
         BufferedImage image = this.animate.get();
@@ -190,6 +274,11 @@ public class Fighter extends Entity {
         g.drawString("Frame: " + this.animate.getAnimationIndex(), boundingBox.x, boundingBox.y - 10);
     }
 
+    /**
+     * Returns the fighter's hitbox if it is in an attack state.
+     *
+     * @return an {@code Optional} containing the hitbox {@code Rectangle} if the fighter is attacking, otherwise empty.
+     */
     public Optional<Rectangle> getHitBox() {
         BufferedImage image = this.animate.get();
         int width = image.getWidth() - 1;
@@ -202,7 +291,7 @@ public class Fighter extends Entity {
             case ATTACK1:
                 if (this.animate.getAnimationIndex() == this.animate.getAnimationMaxIndex() - 2) {
                     int offsetWidth = 85;
-                    if (this.animate.getFlipAsset() == true) {
+                    if (this.animate.getFlipAsset()) {
                         rect = Optional.of(new Rectangle(this.x + (sizeX / 2) - offsetWidth, this.y + (sizeY / 2) - 30,
                                 offsetWidth, 60));
                     } else {
@@ -214,7 +303,7 @@ public class Fighter extends Entity {
             case ATTACK2:
                 if (this.animate.getAnimationIndex() == this.animate.getAnimationMaxIndex() - 2) {
                     int offsetWidth = 87;
-                    if (this.animate.getFlipAsset() == true) {
+                    if (this.animate.getFlipAsset()) {
                         rect = Optional.of(new Rectangle(this.x + (sizeX / 2) - offsetWidth, this.y + (sizeY / 2) - 55,
                                 offsetWidth, 85));
                     } else {
@@ -230,6 +319,11 @@ public class Fighter extends Entity {
         return rect;
     }
 
+    /**
+     * Retrieves the axis-aligned bounding box (AABB) of the fighter.
+     *
+     * @return the AABB {@code Rectangle} representing the fighter's bounding box.
+     */
     public Rectangle getAABB() {
         BufferedImage image = this.animate.get();
         int width = image.getWidth() - 1;
@@ -240,7 +334,6 @@ public class Fighter extends Entity {
         Rectangle rect = new Rectangle(this.x + (sizeX / 2) - 15, this.y + (sizeY / 2) - 25, 25, 55);
 
         int offsetWidth = 0;
-        int offsetHeight = 0;
         switch (this.animate.getCurrentAsset().state) {
             case ATTACK1:
                 offsetWidth += 10;
@@ -252,7 +345,7 @@ public class Fighter extends Entity {
                 break;
         }
 
-        if (this.animate.getFlipAsset() == true) {
+        if (this.animate.getFlipAsset()) {
             rect.x -= offsetWidth;
             rect.width += offsetWidth;
         } else {
@@ -262,6 +355,12 @@ public class Fighter extends Entity {
         return rect;
     }
 
+    /**
+     * Adjusts the fighter's position relative to its axis-aligned bounding box (AABB).
+     *
+     * @param width  the new X-coordinate of the fighter.
+     * @param height the new Y-coordinate of the fighter.
+     */
     public void setPositionRelativeToAABB(int width, int height) {
         Rectangle aabb = this.getAABB();
         this.y -= aabb.getY() + aabb.getHeight() - height;
