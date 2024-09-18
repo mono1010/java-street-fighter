@@ -14,10 +14,14 @@ import ch.teko.game.controllers.*;
  */
 public class Game extends JPanel {
 
-    // Two fighter objects representing the players in the game
+    /** 
+     * Two fighter objects representing the players in the game
+     */
     Fighter f1, f2;
 
-    // Offset value to set the starting position of the fighters
+    /**
+     *  Offset value to set the starting position of the fighters
+     */
     final int startOffset = 80;
 
     /**

@@ -16,12 +16,28 @@ enum Fighter {
     FIGHTER2,
 }
 
+/**
+ * Settings class initializing variables by reading a provided config file.
+ */
 public class Settings {
+    /**
+     * Hardcoded config filename
+     */
     private final String PROPERTIES_FILE = "config.properties";
 
+    /**
+     * Fighter one settings
+     */
     private FighterSettings fighter1;
+    
+    /**
+     * Fighter two settings
+     */
     private FighterSettings fighter2;
 
+    /**
+     * Log4J logger instance
+     */
     private Logger log = LogManager.getLogger(Main.class);
 
     /**
@@ -29,6 +45,9 @@ public class Settings {
      */
     private static Settings instance;
 
+    /**
+     * Settings constructor initializing the fighter settings
+     */
     public Settings() {
         this.fighter1 = new FighterSettings(Fighter.FIGHTER1);
         this.fighter2 = new FighterSettings(Fighter.FIGHTER2);
@@ -68,7 +87,7 @@ public class Settings {
     }
 
     /**
-     * 
+     * Gets the Fighter1
      * @return Fighter 1 settings
      */
     public FighterSettings getFighter1() {
@@ -76,7 +95,7 @@ public class Settings {
     }
 
     /**
-     * 
+     * Gets the Fighter2
      * @return Fighter 2 settings
      */
     public FighterSettings getFighter2() {

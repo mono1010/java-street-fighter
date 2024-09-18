@@ -8,6 +8,13 @@ import ch.teko.game.view.MainFrame;
 public class Main {
 
   /**
+   * Empty and unused constructor
+   */
+  public Main() {
+
+  }
+
+  /**
    * The entry point of the application.
    * This will only init the MainFrame class
    * @param args The path to the assets folder for the selected player.

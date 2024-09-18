@@ -12,30 +12,44 @@ import ch.teko.game.Main;
  */
 public class AnimationState {
 
-    // Velocity in the X and Y directions
+    /**
+     *  Velocity in the X and Y directions
+     */
     public float velocityX, velocityY;
 
-    // Flag to indicate if the character can run
+    /** 
+     * Flag to indicate if the character can run
+     */
     public boolean canRun = true;
 
-    // Variables to manage animation timing and iterations
+    /**
+     *  Variables to manage animation timing and iterations
+     */
     private int currentAnimationIterations = 0;
     private int animationIterations = 0;
     private int tickesUsedForAnimation = 0;
     private int maxTicksForAnimation = 0;
 
-    // Asset manager and animation handler
+    /**
+     * Asset manager and animation handler
+     */
     private AssetsManager assetsManager;
     private Animate animate;
 
-    // Current and previous animation states
+    /**
+     * Current and previous animation states
+     */
     private Optional<Asset.State> currentAnimation;
     private Optional<Asset.State> previousAnimation;
 
-    // List of wanted animations that can be triggered
+    /**
+     * List of wanted animations that can be triggered
+     */
     private List<Asset.State> wantedAnimations = new ArrayList<>();
 
-    // Logger for logging animation events
+    /**
+     * Logger for logging animation events
+     */
     private Logger log = LogManager.getLogger(Main.class);
 
     /**

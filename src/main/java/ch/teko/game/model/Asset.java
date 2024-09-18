@@ -11,11 +11,35 @@ public class Asset {
      * Enumeration of existing animations.
      */
     public enum State {
+
+        /**
+         * The player running.
+         */
         RUN,
+
+        /**
+         * The player idle (standing still).
+         */
         IDLE,
+
+        /**
+         * The player jumping.
+         */
         JUMP,
+
+        /**
+         * The player falling.
+         */
         FALL,
+
+        /**
+         * The player's first attack animation.
+         */
         ATTACK1,
+
+        /**
+         * The player's second attack animation.
+         */
         ATTACK2
     }
 

@@ -31,7 +31,7 @@ public class FighterSettings {
     private Logger log = LogManager.getLogger(Main.class);
 
     /**
-     * 
+     * Sets the Fighter Object
      * @param fighter Fighter 1 or 2
      */
     public FighterSettings(Fighter fighter) {

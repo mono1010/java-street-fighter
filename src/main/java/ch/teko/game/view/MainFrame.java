@@ -30,23 +30,39 @@ import ch.teko.game.controllers.*;
  */
 public class MainFrame extends JFrame {
 
-  // Flag to skip the startup menu for debugging purposes
+  /**
+   * Flag to skip the startup menu for debugging purposes
+   */
   private final boolean instantStart = false;
 
-  // Dimensions of the main game window
+  /** 
+   * Dimension WIDTH of the main game window
+   */
   private final int WIDTH = 600;
+
+  /** 
+   * Dimension HEIGHT of the main game window
+   */
   private final int HEIGHT = 400;
 
-  // Logger for logging purposes
+  /**
+   *  Logger for logging purposes
+   */
   private Logger log = LogManager.getLogger(Main.class);
 
-  // Game view for displaying the game
+  /**
+   * Game view for displaying the game
+   */
   private Game gameView;
 
-  // Menu view for displaying the main menu
+  /**
+   *  Menu view for displaying the main menu
+   */
   private Menu menuView;
 
-  // Winner view for displaying the winner screen
+  /**
+   * Winner view for displaying the winner screen
+   */
   private Winner winnerView;
 
   /**

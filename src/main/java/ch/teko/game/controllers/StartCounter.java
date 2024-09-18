@@ -19,6 +19,9 @@ public class StartCounter {
     // Variables for tracking the time between ticks
     private long lastTime, timer;
 
+    /**
+     * Empty constructor
+     */
     public StartCounter() {
 
     }

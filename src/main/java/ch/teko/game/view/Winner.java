@@ -20,10 +20,14 @@ import javax.swing.SwingConstants;
  */
 public class Winner extends JPanel {
 
-    // JLabel to display which player won
+    /** JLabel to display which player won
+     * 
+     */
     private JLabel label;
 
-    // Boolean flag to indicate when to exit the panel
+    /** 
+     * Boolean flag to indicate when to exit the panel
+     */
     public boolean exit;
 
     /**
