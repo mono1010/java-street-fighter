@@ -31,6 +31,15 @@
             </includes>
             <filtering>false</filtering>
           </resource>
+
+          <!-- Include all resources from the assets directory -->
+          <resource>
+            <directory>src/main/resources</directory>
+            <includes>
+              <include>assets/**/*</include> <!-- Include all files in the assets directory -->
+            </includes>
+            <filtering>false</filtering>
+          </resource>
         </resources>
       </build>
     </profile>
