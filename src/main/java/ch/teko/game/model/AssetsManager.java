@@ -3,8 +3,12 @@ package ch.teko.game.model;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +20,13 @@ import org.apache.logging.log4j.Logger;
 import ch.teko.game.Main;
 import ch.teko.game.model.*;
 
-
 /**
- * The {@code AssetsManager} class handles the loading and management of game assets.
- * It loads sprite images and metadata for various asset states (e.g., running, jumping, etc.).
- * The assets are loaded from disk based on their metadata and image files and stored for future use.
+ * The {@code AssetsManager} class handles the loading and management of game
+ * assets.
+ * It loads sprite images and metadata for various asset states (e.g., running,
+ * jumping, etc.).
+ * The assets are loaded from disk based on their metadata and image files and
+ * stored for future use.
  */
 public class AssetsManager {
 
@@ -31,7 +37,8 @@ public class AssetsManager {
     Asset assets[] = new Asset[Asset.State.values().length];
 
     /**
-     * Constructs an {@code AssetsManager} object and loads all assets from the provided directory.
+     * Constructs an {@code AssetsManager} object and loads all assets from the
+     * provided directory.
      *
      * @param assetsDir the directory containing the asset files and metadata.
      */
@@ -42,7 +49,8 @@ public class AssetsManager {
             for (Asset.State a : Asset.State.values()) {
                 String assetPath = assetsDir + assetFiles[a.ordinal()] + ".png";
                 log.info("Loading asset {}", assetPath);
-                this.assets[a.ordinal()] = new Asset(getAssetMetadata(assetsMetadata, a), loadImageFromDisk(assetPath), a);
+                this.assets[a.ordinal()] = new Asset(getAssetMetadata(assetsMetadata, a), loadImageFromDisk(assetPath),
+                        a);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +61,8 @@ public class AssetsManager {
      * Retrieves the metadata for a specific asset based on its state.
      *
      * @param assetsMetadatas the list of asset metadata loaded from the CSV file.
-     * @param asset the state of the asset for which metadata is requested.
+     * @param asset           the state of the asset for which metadata is
+     *                        requested.
      * @return the {@code AssetsMetadata} object for the specified asset.
      * @throws Error if the metadata for the requested asset is not found.
      */
@@ -90,14 +99,16 @@ public class AssetsManager {
 
     /**
      * Loads the metadata for all assets from a CSV file located at the given path.
-     * Each row in the CSV file contains the asset name, sprite columns and sprite rows.
+     * Each row in the CSV file contains the asset name, sprite columns and sprite
+     * rows.
      *
      * @param path the file path to the CSV file containing the asset metadata.
-     * @return a list of {@code AssetsMetadata} objects representing the metadata of the assets.
+     * @return a list of {@code AssetsMetadata} objects representing the metadata of
+     *         the assets.
      */
     private static List<AssetsMetadata> loadAssetsMetadatas(String path) {
         List<AssetsMetadata> assetsMetadataList = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader br = new BufferedReader(AssetsManager.readFiles(path))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
@@ -111,15 +122,34 @@ public class AssetsManager {
         return assetsMetadataList;
     }
 
+    private static InputStreamReader readFiles(String path) throws FileNotFoundException {
+        if (Main.PRODUCTION) {
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            return new InputStreamReader(classloader.getResourceAsStream(path));
+        }
+
+        return new FileReader(path);
+    }
+
+    private static InputStream readFile(String path) throws FileNotFoundException {
+        if (Main.PRODUCTION) {
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            return classloader.getResourceAsStream(path);
+        }
+
+        return new FileInputStream(new File(path));
+    }
+
     /**
      * Loads an image from the disk at the specified path.
      *
      * @param path the file path of the image to be loaded.
-     * @return a {@code BufferedImage} object containing the loaded image, or {@code null} if the image could not be loaded.
+     * @return a {@code BufferedImage} object containing the loaded image, or
+     *         {@code null} if the image could not be loaded.
      */
     private static BufferedImage loadImageFromDisk(String path) {
         try {
-            return ImageIO.read(new File(path));
+            return ImageIO.read(AssetsManager.readFile(path));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,4 +157,3 @@ public class AssetsManager {
         return null;
     }
 }
-

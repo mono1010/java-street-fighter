@@ -56,13 +56,14 @@ public class Fighter extends Entity {
     private Logger log = LogManager.getLogger(Main.class);
 
     /**
-     * Constructs a new {@code Fighter} instance, initializing it with the given position,
+     * Constructs a new {@code Fighter} instance, initializing it with the given
+     * position,
      * player identifier, and asset directory.
      *
-     * @param x          the initial X-coordinate of the fighter.
-     * @param y          the initial Y-coordinate of the fighter.
-     * @param isPlayer1  flag to indicate if this fighter is player 1.
-     * @param assetsDir  the directory containing the assets for this fighter.
+     * @param x         the initial X-coordinate of the fighter.
+     * @param y         the initial Y-coordinate of the fighter.
+     * @param isPlayer1 flag to indicate if this fighter is player 1.
+     * @param assetsDir the directory containing the assets for this fighter.
      */
     public Fighter(int x, int y, boolean isPlayer1, String assetsDir) {
         super(x, y, 0, 0);
@@ -78,7 +79,8 @@ public class Fighter extends Entity {
     }
 
     /**
-     * Constructs a new {@code Fighter} instance, initializing it with the given position,
+     * Constructs a new {@code Fighter} instance, initializing it with the given
+     * position,
      * player identifier, and an existing {@code AssetsManager}.
      *
      * @param x             the initial X-coordinate of the fighter.
@@ -118,7 +120,8 @@ public class Fighter extends Entity {
 
     /**
      * Retrieves the input controller for the fighter.
-     * Player 1 uses {@code player1} controls, and Player 2 uses {@code player2} controls.
+     * Player 1 uses {@code player1} controls, and Player 2 uses {@code player2}
+     * controls.
      *
      * @return the {@code PlayerControlls} object associated with the fighter.
      */
@@ -130,7 +133,8 @@ public class Fighter extends Entity {
     }
 
     /**
-     * Sets the animation state based on the fighter's input, such as moving or attacking.
+     * Sets the animation state based on the fighter's input, such as moving or
+     * attacking.
      * It also handles flipping the asset if necessary.
      */
     void setAnimation() {
@@ -161,7 +165,8 @@ public class Fighter extends Entity {
     }
 
     /**
-     * Updates the fighter's velocity based on the current input and animation state.
+     * Updates the fighter's velocity based on the current input and animation
+     * state.
      */
     void setVelocity() {
         if (this.animationState.canRun) {
@@ -220,7 +225,8 @@ public class Fighter extends Entity {
     }
 
     /**
-     * Updates the fighter's state and position on each game tick, adjusting animations,
+     * Updates the fighter's state and position on each game tick, adjusting
+     * animations,
      * velocity, and ensuring the fighter stays within the map boundaries.
      */
     @Override
@@ -250,7 +256,8 @@ public class Fighter extends Entity {
     }
 
     /**
-     * Renders the fighter on the screen, including its current animation and hitbox.
+     * Renders the fighter on the screen, including its current animation and
+     * hitbox.
      *
      * @param g the {@code Graphics} object used for rendering.
      */
@@ -259,25 +266,28 @@ public class Fighter extends Entity {
         BufferedImage image = this.animate.get();
         g.drawImage(image, this.x, this.y, null);
 
-        Rectangle boundingBox = this.getAABB();
-        g.setColor(Color.RED);
-        g.drawRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+        if (!Main.PRODUCTION) {
+            Rectangle boundingBox = this.getAABB();
+            g.setColor(Color.RED);
+            g.drawRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
 
-        Optional<Rectangle> hitBoxOptional = this.getHitBox();
-        if (hitBoxOptional.isPresent()) {
-            Rectangle hitBox = hitBoxOptional.get();
-            g.setColor(Color.ORANGE);
-            g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+            Optional<Rectangle> hitBoxOptional = this.getHitBox();
+            if (hitBoxOptional.isPresent()) {
+                Rectangle hitBox = hitBoxOptional.get();
+                g.setColor(Color.ORANGE);
+                g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+            }
+
+            g.setColor(Color.BLACK);
+            g.drawString("Frame: " + this.animate.getAnimationIndex(), boundingBox.x, boundingBox.y - 10);
         }
-
-        g.setColor(Color.BLACK);
-        g.drawString("Frame: " + this.animate.getAnimationIndex(), boundingBox.x, boundingBox.y - 10);
     }
 
     /**
      * Returns the fighter's hitbox if it is in an attack state.
      *
-     * @return an {@code Optional} containing the hitbox {@code Rectangle} if the fighter is attacking, otherwise empty.
+     * @return an {@code Optional} containing the hitbox {@code Rectangle} if the
+     *         fighter is attacking, otherwise empty.
      */
     public Optional<Rectangle> getHitBox() {
         BufferedImage image = this.animate.get();
@@ -356,7 +366,8 @@ public class Fighter extends Entity {
     }
 
     /**
-     * Adjusts the fighter's position relative to its axis-aligned bounding box (AABB).
+     * Adjusts the fighter's position relative to its axis-aligned bounding box
+     * (AABB).
      *
      * @param width  the new X-coordinate of the fighter.
      * @param height the new Y-coordinate of the fighter.
