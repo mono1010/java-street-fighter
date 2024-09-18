@@ -27,14 +27,14 @@ Informationen zu der Entwicklung können im [documentation](./documentation/READ
 
 Offiziell wird MacOS Sonoma unterstützt, Windows sollte jedoch auch funktionieren.
 
-## Releases
+### Releases
 
 Bereits kompilierte Versionen können unter [Releases](https://github.com/mono1010/java-street-fighter/releases) gefunden werden.
 Für jedes Release gibt es zwei Jar Files.
 - `street-fighter-release.jar`
    -  Release Version, beinhaltet das ganze Game
 - `street-fighter-dev.jar`
-    - Development build mit mehr Log ausgaben und debug Informationen
+    - Development build mit mehr Log Ausgaben und debug Informationen
 
 ### Kompilierung
 
