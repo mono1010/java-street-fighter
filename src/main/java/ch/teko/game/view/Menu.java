@@ -118,7 +118,6 @@ public class Menu extends JPanel {
      * Renders the menu.
      *
      * @param g The Graphics object for rendering.
-     * @return True if the menu is open and rendering occurred, false otherwise.
      */
     @Override
     protected void paintComponent(Graphics g) {
