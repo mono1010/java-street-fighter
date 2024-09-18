@@ -139,10 +139,10 @@ public class Fighter extends Entity {
      */
     void setAnimation() {
         if (this.input.right) {
-            if (!this.animate.getFlipAsset())
+            if (this.animate.getFlipAsset())
                 this.animate.flipAsset();
         } else if (this.input.left) {
-            if (this.animate.getFlipAsset())
+            if (!this.animate.getFlipAsset())
                 this.animate.flipAsset();
         }
 
