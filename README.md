@@ -27,18 +27,38 @@ Informationen zu der Entwicklung können im [documentation](./documentation/READ
 
 Offiziell wird MacOS Sonoma unterstützt, Windows sollte jedoch auch funktionieren.
 
-### *NIX
+## Releases
 
-1. `mvn` installieren
-2. Die Datei [run.bash](./run.bash) ausführen mit dem Path zu dem assets Ordner für den Fighter.
-    Beispiel: `./run.bash "GAME_ROOT_FOLDER/src/main/resources/assets/fighter2/"`
+Bereits kompilierte Versionen können unter [Releases](https://github.com/mono1010/java-street-fighter/releases) gefunden werden.
+Für jedes Release gibt es zwei Jar Files.
+- `street-fighter-release.jar`
+   -  Release Version, beinhaltet das ganze Game
+- `street-fighter-dev.jar`
+    - Development build mit mehr Log ausgaben und debug Informationen
+
+### Kompilierung
+
+Für die Kompilierung müssen Maven und Java 21 auf dem Gerät installiert sein.
+
+**Release Build**
+
+Im Terminal `mvn clean install -Prelease` ausführen.
+Die kompilierte Jar Datei befindet sich dann unter "GAME_ROOT_FOLDER/target/street-fighter-x.x.x.jar".
+Mit einem Doppelklick auf die Datei startet sich das Game.
+
+**Development Build**
+
+Mit der Datei [run.bash](./run.bash) wird ein development Build generiert.
+- Optional kann als Argument der Filepath angegeben werden. Beispiel: `./run.bash "GAME_ROOT_FOLDER/src/main/resources/assets/fighter/"` Wenn nicht werden die Assets vom Resource Ordner benutzt.
+
+Der development Build beinhaltet trace logs und debug Game Informationen.
 
 ## Dokumentation
 
 ### Bedienung
 
 - Das Menü kann mit der Escape Taste geöffnet werden
-- Alle Keybinds können im Menü unter Settings gefunden werden
+- Alle Keybinds können im Menü unter Settings gefunden und verändert werden
 
 ### Code
 
