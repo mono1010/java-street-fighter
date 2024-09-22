@@ -1,7 +1,11 @@
 package ch.teko.game;
 
+import javax.swing.UIManager;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.formdev.flatlaf.FlatLightLaf;
 
 import ch.teko.game.view.MainFrame;
 
@@ -37,6 +41,12 @@ public class Main {
   public static void main(String[] args) {
     Main.PRODUCTION = Thread.currentThread().getContextClassLoader().getResource("prod.properties") != null;
     Main.USE_RESOURCE_ASSETS = args.length != 1;
+
+    try {
+      UIManager.setLookAndFeel(new FlatLightLaf());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     if (Main.USE_RESOURCE_ASSETS) {
       log.info("Using assets from resources folder");
