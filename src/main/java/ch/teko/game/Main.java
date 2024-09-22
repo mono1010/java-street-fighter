@@ -14,6 +14,7 @@ public class Main {
    * Boolean representing if the application is starting as in production
    */
   public static boolean PRODUCTION = false;
+  public static boolean USE_RESOURCE_ASSETS = false;
 
   /**
    * Logger for logging purposes
@@ -34,9 +35,10 @@ public class Main {
    * @param args The path to the assets folder for the selected player.
    */
   public static void main(String[] args) {
-    Main.PRODUCTION = args.length != 1;
+    Main.PRODUCTION = Thread.currentThread().getContextClassLoader().getResource("prod.properties") != null;
+    Main.USE_RESOURCE_ASSETS = args.length != 1;
 
-    if (Main.PRODUCTION) {
+    if (Main.USE_RESOURCE_ASSETS) {
       log.info("Using assets from resources folder");
       new MainFrame("assets/fighter/");
     } else {

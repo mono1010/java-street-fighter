@@ -123,7 +123,7 @@ public class AssetsManager {
     }
 
     private static InputStreamReader readFiles(String path) throws FileNotFoundException {
-        if (Main.PRODUCTION) {
+        if (Main.USE_RESOURCE_ASSETS) {
             ClassLoader classloader = Thread.currentThread().getContextClassLoader();
             return new InputStreamReader(classloader.getResourceAsStream(path));
         }
@@ -132,7 +132,7 @@ public class AssetsManager {
     }
 
     private static InputStream readFile(String path) throws FileNotFoundException {
-        if (Main.PRODUCTION) {
+        if (Main.USE_RESOURCE_ASSETS) {
             ClassLoader classloader = Thread.currentThread().getContextClassLoader();
             return classloader.getResourceAsStream(path);
         }
