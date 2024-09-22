@@ -57,7 +57,7 @@ public class Settings {
      * Loads all settings
      */
     public void load() {
-        log.info("settings");
+        log.info("Loading settings");
         try (FileInputStream fis = new FileInputStream("config.properties")) {
             Properties properties = new Properties();
             properties.load(fis);
@@ -65,7 +65,6 @@ public class Settings {
             this.fighter2.load(properties);
         } catch (IOException e) {
             this.log.warn("Failed to load settings");
-            e.printStackTrace();
         }
 
     }
