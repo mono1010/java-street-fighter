@@ -27,6 +27,8 @@ Informationen zu der Entwicklung können im [documentation](./documentation/READ
 
 Offiziell wird MacOS Sonoma unterstützt, Windows sollte jedoch auch funktionieren.
 
+**Für den start der Applikation wird Java 22 empfohlen, Java 21 funktioniert aber auch. Andere Versionen wurden nicht getestet und können zu Fehlern führen!**
+
 ### Releases
 
 Bereits kompilierte Versionen können unter [Releases](https://github.com/mono1010/java-street-fighter/releases) gefunden werden.
