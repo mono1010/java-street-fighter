@@ -145,7 +145,8 @@ public class Menu extends JPanel {
 }
 
 /**
- * The SettingsView class represents the settings panel where the user can modify key bindings for 
+ * The SettingsView class represents the settings panel where the user can
+ * modify key bindings for
  * two players.
  */
 class SettingsView extends JPanel {
@@ -177,7 +178,8 @@ class SettingsView extends JPanel {
     private JButton attack2P2Button;
 
     /**
-     * Constructs a SettingsView instance, which allows the user to configure key bindings 
+     * Constructs a SettingsView instance, which allows the user to configure key
+     * bindings
      * for both players in the given JFrame.
      *
      * @param frame the parent JFrame where this SettingsView will be displayed.
@@ -189,7 +191,7 @@ class SettingsView extends JPanel {
         JPanel keyBindPanel = this;
         GridBagConstraints gbc = new GridBagConstraints();
 
-        // Setting the title label for the settings view.
+        // Setting title
         JLabel titleLabel = new JLabel("Settings");
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -198,10 +200,10 @@ class SettingsView extends JPanel {
         gbc.insets = new Insets(5, 0, 10, 0); // Smaller insets
         keyBindPanel.add(titleLabel, gbc);
 
-        // Reset grid width after the title row
+        // Reset gridwidth after the title row
         gbc.gridwidth = 1;
 
-        // Initialize buttons for Player 1 and Player 2 key binds.
+        // Initialize Buttons
         FighterSettings f1 = Settings.getInstance().getFighter1();
         leftP1Button = createKeyBindButton(f1, Keys.LEFT);
         rightP1Button = createKeyBindButton(f1, Keys.RIGHT);
@@ -218,7 +220,7 @@ class SettingsView extends JPanel {
         attack1P2Button = createKeyBindButton(f2, Keys.ATTACK1);
         attack2P2Button = createKeyBindButton(f2, Keys.ATTACK2);
 
-        // Add UI components for key binds for both players.
+        // Adjust alignment and add components
 
         // Row 1 - Jump and Down for Player 1 and Player 2
         gbc.gridx = 0;
@@ -240,8 +242,97 @@ class SettingsView extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
         keyBindPanel.add(jumpP2Button, gbc);
 
-        // Additional rows for other key bindings are added here...
-        // (skipping repeated code for clarity)
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Down (P1):"), gbc);
+
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(downP1Button, gbc);
+
+        gbc.gridx = 4;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Down (P2):"), gbc);
+
+        gbc.gridx = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(downP2Button, gbc);
+
+        // Row 2 - Left and Right for Player 1 and Player 2
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Left (P1):"), gbc);
+
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(leftP1Button, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Right (P1):"), gbc);
+
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(rightP1Button, gbc);
+
+        gbc.gridx = 4;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Left (P2):"), gbc);
+
+        gbc.gridx = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(leftP2Button, gbc);
+
+        gbc.gridx = 4;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Right (P2):"), gbc);
+
+        gbc.gridx = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(rightP2Button, gbc);
+
+        // Row 3 - Attack 1 and Attack 2 for Player 1 and Player 2
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Attack 1 (P1):"), gbc);
+
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(attack1P1Button, gbc);
+
+        gbc.gridx = 4;
+        gbc.gridy = 5;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Attack 1 (P2):"), gbc);
+
+        gbc.gridx = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(attack1P2Button, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Attack 2 (P1):"), gbc);
+
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(attack2P1Button, gbc);
+
+        gbc.gridx = 4;
+        gbc.gridy = 6;
+        gbc.anchor = GridBagConstraints.EAST;
+        keyBindPanel.add(new JLabel("Attack 2 (P2):"), gbc);
+
+        gbc.gridx = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        keyBindPanel.add(attack2P2Button, gbc);
 
         // Row 4 - Back and Save buttons
         gbc.gridwidth = 2;
@@ -261,10 +352,12 @@ class SettingsView extends JPanel {
 
     /**
      * Creates a key binding button for the given fighter and key.
-     * When pressed, the button allows the user to reassign the key for the specific action.
+     * When pressed, the button allows the user to reassign the key for the specific
+     * action.
      *
-     * @param fighter the FighterSettings object that holds the key bindings for the player.
-     * @param key the specific action key to be bound.
+     * @param fighter the FighterSettings object that holds the key bindings for the
+     *                player.
+     * @param key     the specific action key to be bound.
      * @return the JButton that allows key binding configuration.
      */
     private JButton createKeyBindButton(FighterSettings fighter, Keys key) {
@@ -320,7 +413,8 @@ class SettingsView extends JPanel {
     }
 
     /**
-     * Overrides the paintComponent method. Currently does nothing but can be customized 
+     * Overrides the paintComponent method. Currently does nothing but can be
+     * customized
      * to paint the settings panel.
      *
      * @param g the Graphics object used for rendering the panel.
